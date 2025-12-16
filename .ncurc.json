@@ -1,0 +1,11 @@
+{
+  "$schema": "https://raw.githubusercontent.com/raineorshine/npm-check-updates/main/src/types/RunOptions.json",
+  "upgrade": true,
+  "reject": [],
+  "target": "latest",
+  "timeout": 300000,
+  "install": "always",
+  "deep": true,
+  "packageManager": "pnpm",
+  "jsonUpgraded": true
+}
