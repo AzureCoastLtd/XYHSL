@@ -15,6 +15,7 @@ import SnowParticles from "../effects/SnowParticles";
 import PostProcessing from "../effects/PostProcessing";
 import { useSceneStore } from "../../stores/sceneStore";
 import { CONFIG } from "../../constants/config";
+import PhotoGallery from "../geometry/PhotoGallery";
 
 // --- 内部组件：处理平滑动画 ---
 function SceneContent() {
@@ -174,6 +175,7 @@ export default function GeometricChristmasTreeScene() {
         <Suspense fallback={null}>
           <Environment preset="studio" environmentIntensity={0.5} />
           <SceneContent />
+          <PhotoGallery />
           <SnowParticles />
         </Suspense>
 

@@ -11,8 +11,13 @@ export function useGestureRecognition() {
   // 新增：用于记录上次识别的时间，实现节流
   const lastPredictionTimeRef = useRef(0);
 
-  const { isCameraEnabled, setCameraEnabled, setExploded, setIsHandOpen } =
-    useSceneStore();
+  const {
+    isCameraEnabled,
+    setCameraEnabled,
+    setExploded,
+    setIsHandOpen,
+    setHandClosed,
+  } = useSceneStore();
 
   // 1. 初始化 MediaPipe (保持不变)
   useEffect(() => {
@@ -123,6 +128,26 @@ export function useGestureRecognition() {
                 handPosition: { x: x - 0.5, y: y - 0.5 },
               });
             }
+
+            // --- 3. 新增：捏合手势检测 (Pinch Detection) ---
+            if (handLandmarks) {
+              const thumbTip = handLandmarks[4]; // 拇指指尖
+              const indexTip = handLandmarks[8]; // 食指指尖
+
+              // 计算欧几里得距离
+              const distance = Math.sqrt(
+                Math.pow(thumbTip.x - indexTip.x, 2) +
+                  Math.pow(thumbTip.y - indexTip.y, 2)
+              );
+
+              // 阈值判定：小于 0.05 视为捏合
+              // 注意：这个值是归一化的，可能需要根据实际距离微调
+              const isPinching = distance < 0.05;
+              setHandClosed(isPinching);
+            }
+          } else {
+            // 没有检测到手势时，重置捏合状态
+            setHandClosed(false);
           }
         } catch (error) {
           console.warn("Gesture recognition error:", error);

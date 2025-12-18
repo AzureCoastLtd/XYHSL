@@ -1,6 +1,9 @@
 import { create } from "zustand";
 
 interface SceneState {
+  isHandClosed: boolean;
+  setHandClosed: (isClosed: boolean) => void;
+
   isExploded: boolean;
   setExploded: (isExploded: boolean) => void;
 
@@ -15,6 +18,9 @@ interface SceneState {
 }
 
 export const useSceneStore = create<SceneState>((set) => ({
+  isHandClosed: false,
+  setHandClosed: (isHandClosed) => set({ isHandClosed }),
+
   isExploded: false,
   setExploded: (isExploded) => set({ isExploded }),
 
