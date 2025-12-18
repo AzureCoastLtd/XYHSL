@@ -19,7 +19,7 @@ export const CONFIG = {
     // 缩小尺寸，适应手机屏幕
     treeHeight: 10, // 12 -> 10
     treeRadius: 3.5, // 4.5 -> 3.5
-    targetScale: 0.9, // 1.0 -> 0.9
+    targetScale: 0.8, // 1.0 -> 0.9
   },
   animation: {
     floatSpeed: 0.2,

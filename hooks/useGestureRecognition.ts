@@ -19,20 +19,21 @@ export function useGestureRecognition() {
     const loadRecognizer = async () => {
       try {
         const vision = await FilesetResolver.forVisionTasks(
-          "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
+          "/mediapipe/wasm" // 本地路径
         );
+
         recognizerRef.current = await GestureRecognizer.createFromOptions(
           vision,
           {
             baseOptions: {
-              modelAssetPath:
-                "https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task",
-              delegate: "GPU", // 尝试请求 GPU，如果失败会自动回退到 CPU
+              modelAssetPath: "/mediapipe/gesture_recognizer.task", // 本地路径
+              delegate: "GPU",
             },
             runningMode: "VIDEO",
             numHands: 1,
           }
         );
+
         setIsLoaded(true);
       } catch (error) {
         console.error("MediaPipe 加载失败:", error);
