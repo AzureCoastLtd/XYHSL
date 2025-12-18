@@ -19,14 +19,15 @@ export function useGestureRecognition() {
     const loadRecognizer = async () => {
       try {
         const vision = await FilesetResolver.forVisionTasks(
-          "/mediapipe/wasm" // 本地路径
+          "https://pub-1e3a5383825649febccf7a08a8d30a57.r2.dev/wasm" // 本地路径
         );
 
         recognizerRef.current = await GestureRecognizer.createFromOptions(
           vision,
           {
             baseOptions: {
-              modelAssetPath: "/mediapipe/gesture_recognizer.task", // 本地路径
+              modelAssetPath:
+                "https://pub-1e3a5383825649febccf7a08a8d30a57.r2.dev/gesture_recognizer.task", // 本地路径
               delegate: "GPU",
             },
             runningMode: "VIDEO",
