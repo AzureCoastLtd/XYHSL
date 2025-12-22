@@ -5,10 +5,22 @@ import { useRef, useEffect, useState } from "react";
 export default function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [hasStarted, setHasStarted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // 检测移动设备
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(
+        /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||
+          window.innerWidth < 768
+      );
+    };
+    checkMobile();
+  }, []);
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio || hasStarted) return;
+    if (!audio || hasStarted || isMobile) return;
 
     // 监听首次点击，自动播放
     const handleFirstClick = async () => {
@@ -28,7 +40,12 @@ export default function MusicPlayer() {
     return () => {
       document.removeEventListener("click", handleFirstClick);
     };
-  }, [hasStarted]);
+  }, [hasStarted, isMobile]);
+
+  // 手机端不渲染音乐播放器
+  if (isMobile) {
+    return null;
+  }
 
   return (
     <audio
