@@ -9,12 +9,17 @@ const GeometricChristmasTreeScene = dynamic(
   { ssr: false }
 );
 
+const MusicPlayer = dynamic(() => import("../components/ui/MusicPlayer"), {
+  ssr: false,
+});
+
 export default function Home() {
   return (
     <main className="w-full h-screen overflow-hidden bg-[#000000] relative">
       <GeometricChristmasTreeScene />
       <GestureControls />
       <WishesInput />
+      <MusicPlayer />
     </main>
   );
 }

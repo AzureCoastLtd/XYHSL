@@ -19,6 +19,7 @@ export default function WishesInput() {
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const { addWish, wishes } = useSceneStore();
   const [visibleWishes, setVisibleWishes] = useState<Wish[]>([]);
 
@@ -58,8 +59,16 @@ export default function WishesInput() {
         addWish(data[0]);
       }
 
-      setName("");
-      setMessage("");
+      // 显示成功动画
+      setShowSuccess(true);
+
+      // 1秒后关闭弹窗
+      setTimeout(() => {
+        setShowSuccess(false);
+        setIsOpen(false);
+        setName("");
+        setMessage("");
+      }, 1500);
     } catch (err) {
       console.error("Unexpected error:", err);
     } finally {
@@ -71,7 +80,7 @@ export default function WishesInput() {
     <>
       {/* 触发按钮 - 极简悬浮胶囊 */}
       {!isOpen && (
-        <div className="absolute bottom-8 right-8 z-50 animate-in fade-in duration-700">
+        <div className="absolute bottom-6 right-6 z-50 animate-in fade-in duration-700">
           <button
             onClick={() => setIsOpen(true)}
             className="group flex items-center gap-3 px-6 py-3 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 text-white hover:bg-white/10 hover:border-white/40 transition-all duration-500 shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
@@ -86,6 +95,27 @@ export default function WishesInput() {
       {/* 全屏模态框 */}
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 md:p-8 animate-in fade-in duration-500">
+          {/* 成功动画覆盖层 */}
+          {showSuccess && (
+            <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-300">
+              <div className="flex flex-col items-center gap-4 animate-in zoom-in-95 duration-500">
+                <div className="relative">
+                  <div className="size-18 rounded-full bg-linear-to-br from-amber-200/20 to-transparent border-2 border-amber-200/30 flex items-center justify-center animate-pulse">
+                    <Sparkles
+                      className="size-8 text-amber-200 animate-spin"
+                      style={{ animationDuration: "2s" }}
+                    />
+                  </div>
+                  <div className="absolute inset-0 rounded-full bg-amber-200/10 animate-ping"></div>
+                </div>
+                <div className="text-white text-2xl font-light tracking-wide">
+                  祝福已送达
+                </div>
+                <div className="text-white/50 text-sm">感谢你的美好祝愿！</div>
+              </div>
+            </div>
+          )}
+
           <div
             className="w-full max-w-6xl h-[90vh] md:h-[85vh] rounded-3xl backdrop-blur-2xl bg-[#111]/95 border border-white/10 shadow-2xl flex flex-col md:flex-row overflow-hidden animate-in zoom-in-95 duration-500 relative"
             onClick={(e) => e.stopPropagation()}
