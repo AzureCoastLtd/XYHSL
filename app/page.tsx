@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import GestureControls from "../components/interaction/GestureControls";
+import WishesInput from "../components/ui/WishesInput";
 
 const GeometricChristmasTreeScene = dynamic(
   () => import("../components/scenes/GeometricChristmasTreeScene"),
@@ -13,6 +14,7 @@ export default function Home() {
     <main className="w-full h-screen overflow-hidden bg-[#000000] relative">
       <GeometricChristmasTreeScene />
       <GestureControls />
+      <WishesInput />
     </main>
   );
 }

@@ -15,6 +15,18 @@ interface SceneState {
 
   // 新增：手部位置，用于控制视角
   handPosition: { x: number; y: number };
+
+  // 祝福语数据
+  wishes: Wish[];
+  setWishes: (wishes: Wish[]) => void;
+  addWish: (wish: Wish) => void;
+}
+
+export interface Wish {
+  id: number;
+  name: string;
+  message: string;
+  created_at: string;
 }
 
 export const useSceneStore = create<SceneState>((set) => ({
@@ -31,4 +43,8 @@ export const useSceneStore = create<SceneState>((set) => ({
   setIsHandOpen: (isOpen) => set({ isHandOpen: isOpen }),
 
   handPosition: { x: 0, y: 0 }, // 默认为中心
+
+  wishes: [],
+  setWishes: (wishes) => set({ wishes }),
+  addWish: (wish) => set((state) => ({ wishes: [...state.wishes, wish] })),
 }));

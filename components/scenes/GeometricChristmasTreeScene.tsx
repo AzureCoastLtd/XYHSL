@@ -1,4 +1,4 @@
-import React, { Suspense, useRef } from "react";
+import React, { Suspense, useRef, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   PerspectiveCamera,
@@ -13,9 +13,11 @@ import SpiralRibbon from "../geometry/SpiralRibbon";
 import TreeTopperStar from "../effects/TreeTopperStar";
 import SnowParticles from "../effects/SnowParticles";
 import PostProcessing from "../effects/PostProcessing";
+import ParticlePentagrams from "../effects/ParticlePentagrams";
 import { useSceneStore } from "../../stores/sceneStore";
 import { CONFIG } from "../../constants/config";
 import PhotoGallery from "../geometry/PhotoGallery";
+import { supabase } from "../../utils/supabaseClient";
 
 // --- 内部组件：处理平滑动画 ---
 function SceneContent() {
@@ -124,6 +126,7 @@ function SceneContent() {
       <GemIcosahedrons />
       <SpiralRibbon />
       <TreeTopperStar />
+      <ParticlePentagrams />
     </group>
   );
 }
@@ -132,6 +135,28 @@ function SceneContent() {
 export default function GeometricChristmasTreeScene() {
   // 注意：GestureControls 已经在 page.tsx 中引入，这里不需要重复引入逻辑
   // 这里只负责渲染 3D 场景
+  const { setWishes } = useSceneStore();
+
+  useEffect(() => {
+    const fetchWishes = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("wishes")
+          .select("*")
+          .lte("created_at", new Date().toISOString())
+          .order("created_at", { ascending: false })
+          .limit(50);
+
+        if (data) {
+          setWishes(data);
+        }
+      } catch (error) {
+        console.error("Error fetching wishes:", error);
+      }
+    };
+
+    fetchWishes();
+  }, [setWishes]);
 
   return (
     <div className="w-full h-full relative bg-black">
@@ -174,6 +199,9 @@ export default function GeometricChristmasTreeScene() {
 
         <Suspense fallback={null}>
           <Environment preset="studio" environmentIntensity={0.5} />
+        </Suspense>
+
+        <Suspense fallback={null}>
           <SceneContent />
           <PhotoGallery />
           <SnowParticles />

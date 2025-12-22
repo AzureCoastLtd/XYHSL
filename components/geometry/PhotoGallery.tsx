@@ -39,11 +39,15 @@ function PhotoFrame({
   const treePos = useMemo(() => {
     const seed = index * 123.45;
     const random = (offset: number) => Math.sin(seed + offset) * 0.5 + 0.5;
-    const hBase = 0;
-    const hRange = 2.0;
-    const y = hBase + (index / total) * hRange + (random(1) - 0.5) * 3;
-    const coneRadius = 2.5 * (1 - y / 7.5);
-    const r = coneRadius - 0.5 + random(2) * 0.2;
+    // 调整高度分布范围，使其更均匀地分布在树上 (假设树高约 4.5)
+    const hBase = -3.5;
+    const hRange = 5.5;
+    // 使用 index/total 确保均匀分布，减少随机性带来的聚集
+    const y = hBase + (index / total) * hRange + (random(1) - 0.5) * 1.0;
+
+    const coneRadius = 1 * (1 - y / 3.5);
+    // 稍微往外一点，避免陷进树里
+    const r = Math.max(0.5, coneRadius + 0.2 + random(2) * 0.3);
     const angle = random(2) * Math.PI * 2;
     return new THREE.Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r);
   }, [index, total]);
