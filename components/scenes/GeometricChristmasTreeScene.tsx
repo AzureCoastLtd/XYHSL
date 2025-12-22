@@ -1,5 +1,6 @@
 import React, { Suspense, useRef, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
+import { suspend } from "suspend-react";
 import {
   PerspectiveCamera,
   Environment,
@@ -18,6 +19,7 @@ import { useSceneStore } from "../../stores/sceneStore";
 import { CONFIG } from "../../constants/config";
 import PhotoGallery from "../geometry/PhotoGallery";
 import { supabase } from "../../utils/supabaseClient";
+const studio = import("@pmndrs/assets/hdri/studio.exr");
 
 // --- 内部组件：处理平滑动画 ---
 function SceneContent() {
@@ -198,7 +200,10 @@ export default function GeometricChristmasTreeScene() {
         />
 
         <Suspense fallback={null}>
-          <Environment preset="studio" environmentIntensity={0.5} />
+          <Environment
+            files={(suspend(studio) as any)?.default}
+            environmentIntensity={0.5}
+          />
         </Suspense>
 
         <Suspense fallback={null}>
