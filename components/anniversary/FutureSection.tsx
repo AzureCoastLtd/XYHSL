@@ -78,7 +78,7 @@ export default function FutureSection({ reducedMotion }: { reducedMotion: boolea
               <ArrowUpRight size={16} strokeWidth={1.5} aria-hidden="true" />
             </Link>
           </div>
-          <span className="ann-ending-colophon">这封信没有写完。</span>
+          <span className="ann-ending-colophon">未完待续。</span>
         </footer>
       </div>
     </section>

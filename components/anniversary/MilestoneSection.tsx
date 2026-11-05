@@ -72,7 +72,7 @@ export default function MilestoneSection({ reducedMotion }: { reducedMotion: boo
           <div className="ann-milestone-intro">
             <span className="ann-milestone-label">{milestone?.label}</span>
             <h2 id="ann-milestone-title">每一天，<br />都算数。</h2>
-            <p>从 2024 年 2 月 23 日的第一天，<br />到今天，刚好是我们的第 1000 天。</p>
+            <p>从 2024 年 2 月 23 日的第一天，<br />到 2026 年 11 月 18 日，是我们的第 1000 天。</p>
           </div>
         </div>
 

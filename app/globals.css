@@ -60,10 +60,10 @@ button:disabled { cursor: default; }
   -webkit-font-smoothing: antialiased;
 }
 
-.anniversary-page :is(h1, h2, h3, p, figure) { margin: 0; }
-.anniversary-page :is(h1, h2, h3) { font-weight: 400; text-wrap: balance; line-break: strict; }
-.anniversary-page p { text-wrap: pretty; }
-.anniversary-page button { color: inherit; }
+:where(.anniversary-page) :where(h1, h2, h3, p, figure) { margin: 0; }
+:where(.anniversary-page) :where(h1, h2, h3) { font-weight: 400; text-wrap: balance; line-break: strict; }
+:where(.anniversary-page p) { text-wrap: pretty; }
+:where(.anniversary-page button) { color: inherit; }
 .anniversary-page :is(a, button, [tabindex]):focus-visible {
   outline: 2px solid var(--ann-gold);
   outline-offset: 6px;
