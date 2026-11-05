@@ -31,7 +31,7 @@ export const timelineEntries: TimelineEntry[] = [
     date: "2023.12.24",
     label: "THE FIRST PAGE",
     title: "故事从屏幕的一端开始",
-    description: "我们因为网络相识。那时故事还没有名字，但已经悄悄翻开了第一页。",
+    description: "2023 年 12 月 24 日，我们在网络上认识。那时故事还没有名字，但已经悄悄翻开了第一页。",
     tone: "memory",
   },
   {

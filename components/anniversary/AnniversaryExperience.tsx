@@ -307,7 +307,14 @@ function AmbientMusic() {
     }
 
     startingRef.current = true;
-    const context = new AudioContextConstructor();
+    let context: AudioContext;
+    try {
+      context = new AudioContextConstructor();
+    } catch {
+      startingRef.current = false;
+      setSupported(false);
+      return;
+    }
     const master = context.createGain();
     master.gain.setValueAtTime(0.0001, context.currentTime);
     master.gain.exponentialRampToValueAtTime(0.035, context.currentTime + 1.2);
@@ -332,11 +339,19 @@ function AmbientMusic() {
       });
     };
 
-    await context.resume();
+    try {
+      await context.resume();
+    } catch {
+      startingRef.current = false;
+      contextRef.current = null;
+      await context.close().catch(() => undefined);
+      setSupported(false);
+      return;
+    }
 
     if (unmountedRef.current || contextRef.current !== context) {
       startingRef.current = false;
-      await context.close();
+      await context.close().catch(() => undefined);
       return;
     }
 
@@ -360,24 +375,26 @@ function AmbientMusic() {
   );
 }
 
-function renderMedia(media: TimelineMedia) {
-  if (media.type === "photos") return <PhotoDeck key="photos" />;
+function renderMedia(media: TimelineMedia, index: number) {
+  const key = `${media.type}-${index}`;
+  if (media.type === "photos") return <PhotoDeck key={key} />;
   if (media.type === "sticker") {
-    return <TeaSticker key="sticker" label={media.label} caption={media.caption} />;
+    return <TeaSticker key={key} label={media.label} caption={media.caption} />;
   }
-  if (media.type === "ambient") return <AmbientMusic key="ambient" />;
+  if (media.type === "ambient") return <AmbientMusic key={key} />;
   if (media.type === "audio") {
-    return <AudioSlot key="audio" title={media.title} note={media.note} />;
+    return <AudioSlot key={key} title={media.title} note={media.note} />;
   }
   if (media.type === "video") {
-    return <VideoSlot key="video" title={media.title} note={media.note} />;
+    return <VideoSlot key={key} title={media.title} note={media.note} />;
   }
-  return <LetterCard key="letter" />;
+  return <LetterCard key={key} />;
 }
 
 function TimelineEntryCard({ entry }: { entry: (typeof timelineEntries)[number] }) {
   const inlineMedia = entry.media?.filter((media) => media.type === "sticker" || media.type === "ambient") ?? [];
   const stackedMedia = entry.media?.filter((media) => media.type !== "sticker" && media.type !== "ambient") ?? [];
+  const mediaIndex = (media: TimelineMedia) => entry.media?.indexOf(media) ?? 0;
 
   return (
     <article id={entry.id} className={`ann-entry ann-entry-${entry.tone}`}>
@@ -391,10 +408,14 @@ function TimelineEntryCard({ entry }: { entry: (typeof timelineEntries)[number] 
         <h2><BlurReveal text={entry.title} /></h2>
         <p>{entry.description}</p>
         {inlineMedia.length ? (
-          <div className="ann-memory-tools">{inlineMedia.map(renderMedia)}</div>
+          <div className="ann-memory-tools">
+            {inlineMedia.map((media) => renderMedia(media, mediaIndex(media)))}
+          </div>
         ) : null}
         {stackedMedia.length ? (
-          <div className="ann-letter-tools">{stackedMedia.map(renderMedia)}</div>
+          <div className="ann-letter-tools">
+            {stackedMedia.map((media) => renderMedia(media, mediaIndex(media)))}
+          </div>
         ) : null}
       </Reveal>
     </article>
