@@ -55,7 +55,9 @@ export default function AnniversaryExperience() {
 
   // Hero owns the opening animation; scrolling begins only after that sequence ends.
   const openLetter = useCallback(() => {
-    document.getElementById("first-page")?.scrollIntoView({
+    const firstPage = document.getElementById("first-page");
+    firstPage?.querySelector("h2")?.focus({ preventScroll: true });
+    firstPage?.scrollIntoView({
       behavior: reducedMotion ? "auto" : "smooth",
       block: "start",
     });

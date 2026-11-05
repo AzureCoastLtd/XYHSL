@@ -1,6 +1,7 @@
 "use client";
 
 import { type TimelineEntry, timelineEntries } from "./data";
+import { Reveal } from "./effects";
 import { renderMedia } from "./media";
 import "./timeline.css";
 
@@ -15,20 +16,20 @@ function TimelineEntryCard({ entry, index }: { entry: TimelineEntry; index: numb
       data-media={entry.media?.some((media) => media.type === "photos") ? "photos" : undefined}
       aria-labelledby={`${entry.id}-title`}
     >
-      <div className="ann-entry-content">
+      <Reveal className="ann-entry-content">
         <div className="ann-entry-meta">
           <span className="ann-memory-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
           <span className="ann-memory-label">{entry.label}</span>
           {isDate ? <time className="ann-entry-date" dateTime={entry.date.replaceAll(".", "-")}>{entry.date}</time> : <span className="ann-entry-date">{entry.date}</span>}
         </div>
-        <h2 id={`${entry.id}-title`} aria-label={entry.title}>
+        <h2 id={`${entry.id}-title`} aria-label={entry.title} tabIndex={-1}>
           {(entry.titleLines?.length ? entry.titleLines : [entry.title]).map((line, lineIndex) => (
             <span className="ann-memory-title-line" key={`${line}-${lineIndex}`}>{line}</span>
           ))}
         </h2>
         <p className="ann-entry-description">{entry.description}</p>
         <span className="ann-memory-rule" aria-hidden="true" />
-      </div>
+      </Reveal>
       {hasMedia ? <div className="ann-entry-artifacts">{entry.media?.map((media, mediaIndex) => renderMedia(media, mediaIndex))}</div> : null}
     </article>
   );

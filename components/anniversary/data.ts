@@ -143,6 +143,9 @@ export const photoEntries: PhotoEntry[] = [
   { src: "/images/4.webp", alt: "夜晚的灯光前，我们靠近彼此的合照", caption: "靠近一点，再近一点" },
   { src: "/images/5.webp", alt: "点点灯光前，我们微笑着的合照", caption: "喜欢这样的我们" },
   { src: "/images/6.webp", alt: "抱着花束，我们相视而笑的合照", caption: "这一刻，刚刚好" },
+  { src: "/images/7.webp", alt: "雪地里，我们与雪人和小狗的合影", caption: "把冬天也收藏" },
+  { src: "/images/8.webp", alt: "行李箱旁，我们拥抱的合照", caption: "把拥抱留下" },
+  { src: "/images/9.webp", alt: "阳光下，我们靠近彼此的合照", caption: "和你同框的风景" },
 ];
 
 export const letterContent = {

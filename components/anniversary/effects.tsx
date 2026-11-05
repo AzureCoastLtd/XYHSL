@@ -97,16 +97,17 @@ export function Starfield() {
 
 export function Reveal({ children, className = "" }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     const element = ref.current;
-    if (!element || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!element || reducedMotion) return;
     let animation: Animation | undefined;
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting) return;
       animation = element.animate(
-        [{ opacity: 0.7, transform: "translateY(18px)" }, { opacity: 1, transform: "none" }],
-        { duration: 560, easing: "cubic-bezier(.16,1,.3,1)" },
+        [{ opacity: 0.82, transform: "translateY(10px)" }, { opacity: 1, transform: "none" }],
+        { duration: 420, easing: "cubic-bezier(.16,1,.3,1)" },
       );
       observer.disconnect();
     }, { threshold: 0.08 });
@@ -115,7 +116,7 @@ export function Reveal({ children, className = "" }: { children: ReactNode; clas
       observer.disconnect();
       animation?.cancel();
     };
-  }, []);
+  }, [reducedMotion]);
 
   return <div ref={ref} className={`ann-reveal is-visible ${className}`}>{children}</div>;
 }

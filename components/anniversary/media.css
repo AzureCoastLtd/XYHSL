@@ -515,6 +515,30 @@
   }
 }
 
+@supports (interpolate-size: allow-keywords) and (transition-behavior: allow-discrete) and selector(::details-content) {
+  .ann-tea-memory::details-content {
+    display: flow-root;
+    block-size: 0;
+    overflow: clip;
+    overflow-clip-margin: 12px;
+    opacity: 0;
+    interpolate-size: allow-keywords;
+    transition:
+      block-size 320ms var(--ann-ease-paper),
+      opacity 220ms ease,
+      content-visibility 320ms allow-discrete;
+  }
+
+  .ann-tea-memory[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+
+  .ann-tea-memory .ann-tea-recalled {
+    animation: none;
+  }
+}
+
 .ann-tea-recalled > span {
   color: var(--ann-paper-muted);
   font-family: var(--ann-sans);
@@ -872,6 +896,10 @@
 @media (prefers-reduced-motion: reduce) {
   .ann-tea-recalled {
     animation: none;
+  }
+
+  .ann-tea-memory::details-content {
+    transition: none;
   }
 
   .ann-photo-print,
