@@ -51,7 +51,7 @@ export function MilestoneAtmosphere() {
   const { enhanced } = useVisualMode(ref);
 
   return (
-    <div ref={ref} className="ann-milestone-atmosphere" aria-hidden="true">
+    <div ref={ref} className="ann-particle-atmosphere" aria-hidden="true">
       <div className="ann-milestone-halo" />
       {enhanced ? (
         <Particles
