@@ -28,9 +28,10 @@ export function useVisualMode(ref: RefObject<HTMLElement | null>) {
     const compact = window.matchMedia("(max-width: 760px)");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let visible = false;
+    let contextFailed = false;
 
     const update = () => {
-      const eligible = visible && !document.hidden && !compact.matches && !reduced.matches;
+      const eligible = visible && !document.hidden && !compact.matches && !reduced.matches && !contextFailed;
       if (eligible && webGLAvailable === undefined) {
         try {
           const probe = document.createElement("canvas").getContext("webgl2", { powerPreference: "low-power" });
@@ -47,6 +48,12 @@ export function useVisualMode(ref: RefObject<HTMLElement | null>) {
       });
     };
 
+
+    const onContextFailure = (event: Event) => {
+      if (!(event.target instanceof HTMLCanvasElement)) return;
+      contextFailed = true;
+      update();
+    };
     const observer = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
       update();
@@ -55,6 +62,8 @@ export function useVisualMode(ref: RefObject<HTMLElement | null>) {
     compact.addEventListener("change", update);
     reduced.addEventListener("change", update);
     document.addEventListener("visibilitychange", update);
+    element.addEventListener("webglcontextlost", onContextFailure, true);
+    element.addEventListener("webglcontextcreationerror", onContextFailure, true);
     update();
 
     return () => {
@@ -62,6 +71,8 @@ export function useVisualMode(ref: RefObject<HTMLElement | null>) {
       compact.removeEventListener("change", update);
       reduced.removeEventListener("change", update);
       document.removeEventListener("visibilitychange", update);
+      element.removeEventListener("webglcontextlost", onContextFailure, true);
+      element.removeEventListener("webglcontextcreationerror", onContextFailure, true);
     };
   }, [ref]);
 

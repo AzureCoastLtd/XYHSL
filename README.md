@@ -22,22 +22,21 @@ pnpm dev
 
 ## 内容维护
 
-时间线、未来愿望和照片列表集中在 `components/anniversary/data.ts`。
-每个时间节点支持：
+时间线、未来愿望、照片列表和信件正文集中在 `components/anniversary/data.ts`。
+普通时间节点使用 `tone: "memory"`；`tone: "milestone"` 的节点由第 1000 天专属章节呈现。节点的 `navLabel` 用于进度导航，`titleLines` 可控制中文标题断行，`media` 可配置日期卡、照片、贴纸、音频或视频。
 
-- `date` / `label` / `title` / `description`
-- `tone`：`memory`（普通回忆）或 `milestone`（里程碑）
-- `sticker`：可选贴纸文案
-
-新增节点只需在 `timelineEntries` 里追加一项，页面会自动渲染并加入进度条。
+以 `2024-02-23` 为第 1 天，第 1000 天是 `2026-11-18`。
 
 ## 媒体替换
 
-- 照片：把文件放进 `public/images/`，在 `photoEntries` 中登记，并补充真实 `alt`。
-- 《青花瓷》音频：`components/anniversary/AnniversaryExperience.tsx` 的 `AudioSlot` 目前是待替换状态；拿到音频文件后放进 `public/`，把该模块换成 `<audio>` 控件。
-- 视频：`VideoSlot` 同样是占位，替换方式与音频一致。
-- 背景轻音乐：目前由 `AmbientMusic` 用 Web Audio 现场合成，点击后才播放；如需换成真实曲目，替换该组件内的振荡器逻辑即可。
+- 照片：把文件放进 `public/images/`，在 `photoEntries` 中登记路径、真实 `alt` 和图注。
+- 音频和视频：在 `timelineEntries` 的对应 `media` 项中填写 `src`，例如 `src: "/media/recording.mp3"`；视频还可设置 `poster`。文件放在 `public/` 后，页面会显示原生播放控件；未配置时只显示文字，不显示播放按钮。
+- 《青花瓷》：仅在拥有合适的音频文件及使用权限时，将其路径填入独立的音频项；仓库不包含该歌曲。
+- 背景轻音乐：页头控制的是浏览器现场合成的旋律，不是《青花瓷》；点击后才播放，与音视频播放互斥。
 
-## 时间线日期
+## 字体与动效
 
-以 `2024-02-23` 为第 1 天，第 1000 天是 `2026-11-18`。
+页面使用本地的 Noto Serif SC 子集，字体许可见 `public/fonts/OFL.txt`。`components/reactbits/` 包含 React Bits 的 `BlurText`、`LightRays`、`Particles` 和 `CircularGallery`；其许可为 MIT + Commons Clause，见同目录的 `LICENSE.md`。`BlurText` 的外层元素由上游的 `p` 调整为 `span`，以便放入标题。
+本地适配还包括画廊的就绪/失败回调，以及画廊和粒子组件的 Strict Mode 上下文清理；初始化失败或上下文丢失时保留原生照片。
+
+WebGL 动效仅在合适的桌面视口、支持 WebGL2、对应章节可见且未启用减少动态效果时加载；手机和不支持的环境使用可阅读的 DOM 内容与静态背景。

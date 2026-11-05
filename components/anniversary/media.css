@@ -34,12 +34,12 @@
   width: 100%;
   height: 100%;
   margin: 0;
-  padding: 18px 12px 20px;
+  padding: 24px 24px 28px;
   overflow-x: auto;
   overflow-y: hidden;
   list-style: none;
   scroll-snap-type: x mandatory;
-  scroll-padding-inline: 12px;
+  scroll-padding-inline: 24px;
   overscroll-behavior-x: contain;
   scrollbar-width: thin;
   scrollbar-color: var(--ann-line-strong) transparent;
@@ -131,6 +131,11 @@
   z-index: 2;
   inset: 0;
   pointer-events: none;
+  visibility: hidden;
+}
+
+.ann-photo-webgl[data-ready] {
+  visibility: visible;
 }
 
 .ann-photo-webgl .circular-gallery {
@@ -492,7 +497,6 @@
 .ann-tea-recalled {
   margin: 20px 12px 0;
   padding: 20px 24px;
-  border-left: 3px solid #b87978;
   background: var(--ann-paper);
   color: var(--ann-paper-ink);
   box-shadow: var(--ann-shadow-paper);
@@ -788,12 +792,12 @@
 
   .ann-photo-track {
     height: auto;
-    padding: 16px 10px 24px;
-    scroll-padding-inline: 10px;
+    padding: 24px 24px 28px;
+    scroll-padding-inline: 24px;
   }
 
   .ann-photo-page {
-    flex-basis: min(78vw, 300px);
+    flex-basis: min(300px, 100%);
   }
 
   .ann-photo-print {

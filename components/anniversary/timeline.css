@@ -75,7 +75,7 @@
   grid-template-columns: minmax(0, 0.76fr) minmax(0, 1.24fr);
 }
 
-.ann-entry[data-media="photos"]:nth-of-type(odd) {
+.ann-entry[data-media="photos"]:nth-of-type(even) {
   grid-template-columns: minmax(0, 1.24fr) minmax(0, 0.76fr);
 }
 
@@ -194,7 +194,7 @@
   .ann-entry,
   .ann-entry:nth-of-type(even),
   .ann-entry[data-media="photos"],
-  .ann-entry[data-media="photos"]:nth-of-type(odd) {
+  .ann-entry[data-media="photos"]:nth-of-type(even) {
     grid-template-columns: minmax(0, 1fr);
     gap: 36px;
     padding: 64px 0;

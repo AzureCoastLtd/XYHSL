@@ -553,6 +553,7 @@
 
 .ann-hero-bottom > span:last-child {
   font-variant-numeric: tabular-nums;
+  letter-spacing: .03em;
 }
 
 @media (max-width: 1023px) {

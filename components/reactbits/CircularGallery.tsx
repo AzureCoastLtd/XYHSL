@@ -33,6 +33,8 @@ export interface CircularGalleryProps extends Omit<HTMLAttributes<HTMLDivElement
   intro?: boolean;
   onItemClick?: (item: GalleryItem, index: number) => void;
   onActiveChange?: (index: number) => void;
+  onReady?: () => void;
+  onUnavailable?: () => void;
   dpr?: number;
   style?: CSSProperties;
 }
@@ -374,6 +376,8 @@ const CircularGallery = ({
   intro = true,
   onItemClick,
   onActiveChange,
+  onReady,
+  onUnavailable,
   dpr,
   className = '',
   style,
@@ -386,6 +390,10 @@ const CircularGallery = ({
   const buttonsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const engineRef = useRef<Engine | null>(null);
   const fontRef = useRef(font);
+  const onReadyRef = useRef(onReady);
+  const onUnavailableRef = useRef(onUnavailable);
+  onReadyRef.current = onReady;
+  onUnavailableRef.current = onUnavailable;
   const [active, setActive] = useState(0);
   const [open, setOpen] = useState(false);
   const list = Array.isArray(items) && items.length ? items : DEFAULT_ITEMS;
@@ -440,10 +448,16 @@ const CircularGallery = ({
       depth: false,
       stencil: false
     });
-    if (!container || !canvas || !labelLayer || !caption || !gl) return undefined;
+    if (!container || !canvas || !labelLayer || !caption || !gl) {
+      onUnavailableRef.current?.();
+      return undefined;
+    }
 
     const program = link(gl);
-    if (!program) return undefined;
+    if (!program) {
+      onUnavailableRef.current?.();
+      return undefined;
+    }
     const u = program.uniforms;
 
     const vertices: number[] = [];
@@ -524,6 +538,7 @@ const CircularGallery = ({
     let snapTimer = 0;
     let lastItems: GalleryItem[] | null = null;
     let typing = false;
+    let readyNotified = false;
 
     const textureFor = (url: string): TextureEntry => {
       const existing = textures.get(url);
@@ -553,6 +568,10 @@ const CircularGallery = ({
         entry.aspect = image.naturalWidth / Math.max(1, image.naturalHeight);
         entry.loaded = true;
         wake();
+        if (!readyNotified && !gl.isContextLost()) {
+          readyNotified = true;
+          onReadyRef.current?.();
+        }
       };
       image.src = url;
       return entry;
@@ -1161,12 +1180,14 @@ const CircularGallery = ({
       document.removeEventListener('pointerdown', onAnyPointer, true);
       labelLayer.replaceChildren();
       textures.forEach(entry => entry.texture && gl.deleteTexture(entry.texture));
+      textures.clear();
       gl.deleteTexture(blank);
       gl.deleteProgram(program.program);
       gl.deleteBuffer(vertexBuffer);
       gl.deleteBuffer(indexBuffer);
       gl.deleteVertexArray(vao);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      // Strict Mode replays effects while retaining the same canvas.
+      if (!canvas.isConnected) gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
   }, []);
 

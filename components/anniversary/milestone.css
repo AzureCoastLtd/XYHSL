@@ -342,7 +342,7 @@
   .ann-milestone-number {
     margin-left: -4px;
     padding-bottom: 16px;
-    font-size: clamp(138px, 42vw, 226px);
+    font-size: clamp(124px, 40vw, 226px);
   }
 
   .ann-milestone-count-caption {

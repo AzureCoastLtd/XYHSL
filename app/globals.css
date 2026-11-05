@@ -106,9 +106,8 @@ button:disabled { cursor: default; }
 .ann-progress-item { display: flex; align-items: center; gap: 14px; min-height: 44px; color: var(--ann-soft); text-decoration: none; transition: color .2s; }
 .ann-progress-item::before { content: ""; width: 5px; height: 5px; flex: 0 0 5px; border: 1px solid currentColor; border-radius: 50%; }
 .ann-progress-item.is-active { color: var(--ann-gold); }
-.ann-progress-item.is-active::before { background: currentColor; box-shadow: 0 0 12px rgb(231 195 155 / 30%); }
-.ann-progress-label { max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: .5; font-size: 11px; transition: opacity .2s; }
-.ann-progress-item:is(.is-active, :hover, :focus-visible) .ann-progress-label { opacity: 1; }
+.ann-progress-item.is-active::before { background: currentColor; }
+.ann-progress-label { max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
 
 @media (min-width: 1201px) and (max-width: 1460px) {
   .ann-progress-label { display: none; }

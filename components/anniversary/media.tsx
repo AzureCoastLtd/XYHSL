@@ -1,8 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Image from "next/image";
-import { useId, useMemo, useRef, useState } from "react";
+import Image, { getImageProps } from "next/image";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { type PhotoEntry, type TimelineMedia, letterContent, photoEntries } from "./data";
 import { useVisualMode } from "./effects";
 import "./media.css";
@@ -18,9 +18,17 @@ export function PhotoDeck({ photos = photoEntries }: { photos?: PhotoEntry[] }) 
   const trackId = useId();
   const { enhanced, reduced } = useVisualMode(frameRef);
   const [active, setActive] = useState(0);
+  const [galleryReady, setGalleryReady] = useState(false);
+  const [galleryFailed, setGalleryFailed] = useState(false);
+  const renderGallery = enhanced && !galleryFailed;
+  const usingGallery = renderGallery && galleryReady;
+
+  useEffect(() => {
+    if (!enhanced) setGalleryReady(false);
+  }, [enhanced]);
   const items = useMemo(
     () => photos.map((photo) => ({
-      image: photo.src,
+      image: getImageProps({ src: photo.src, alt: photo.alt, width: 320, height: 568 }).props.src,
       text: photo.caption,
       description: photo.alt,
       alt: photo.alt,
@@ -28,9 +36,9 @@ export function PhotoDeck({ photos = photoEntries }: { photos?: PhotoEntry[] }) 
     [photos],
   );
 
-  const updateActive = () => {
+  const updateActive = useCallback(() => {
     const track = trackRef.current;
-    if (!track || enhanced) return;
+    if (!track || usingGallery) return;
     const center = track.scrollLeft + track.clientWidth / 2;
     let closest = 0;
     let distance = Infinity;
@@ -43,7 +51,9 @@ export function PhotoDeck({ photos = photoEntries }: { photos?: PhotoEntry[] }) 
       }
     });
     setActive(closest);
-  };
+  }, [usingGallery]);
+
+  useEffect(() => updateActive(), [updateActive]);
 
   const movePhoto = (direction: number) => {
     const next = Math.max(0, Math.min(photos.length - 1, active + direction));
@@ -69,7 +79,7 @@ export function PhotoDeck({ photos = photoEntries }: { photos?: PhotoEntry[] }) 
           ref={trackRef}
           className="ann-photo-track"
           aria-label="可以左右滑动的照片"
-          inert={enhanced || undefined}
+          inert={usingGallery || undefined}
           onScroll={updateActive}
         >
           {photos.map((photo, index) => (
@@ -99,8 +109,8 @@ export function PhotoDeck({ photos = photoEntries }: { photos?: PhotoEntry[] }) 
             </li>
           ))}
         </ol>
-        {enhanced ? (
-          <div className="ann-photo-webgl">
+        {renderGallery ? (
+          <div className="ann-photo-webgl" data-ready={usingGallery || undefined} aria-hidden={!usingGallery}>
             <CircularGallery
               items={items}
               bend={2}
@@ -121,6 +131,11 @@ export function PhotoDeck({ photos = photoEntries }: { photos?: PhotoEntry[] }) 
               openOnClick
               dpr={1.5}
               onActiveChange={setActive}
+              onReady={() => {
+                setActive(0);
+                setGalleryReady(true);
+              }}
+              onUnavailable={() => setGalleryFailed(true)}
               tabIndex={0}
               aria-label="我们的弧形相册，可用左右方向键切换照片"
             />
@@ -128,7 +143,7 @@ export function PhotoDeck({ photos = photoEntries }: { photos?: PhotoEntry[] }) 
         ) : null}
       </div>
       <div className="ann-album-footer">
-        <p>{enhanced ? "拖动照片 · 方向键切换 · 点开细看" : "左右滑动 · 点照片看完整画面"}</p>
+        <p>{usingGallery ? "拖动照片 · 方向键切换 · 点开细看" : "左右滑动 · 点照片看完整画面"}</p>
         <span className="ann-album-count" aria-live="polite" aria-atomic="true">
           <span>{String(Math.min(active + 1, photos.length)).padStart(2, "0")}</span>
           <span aria-hidden="true"> / </span>
@@ -136,7 +151,7 @@ export function PhotoDeck({ photos = photoEntries }: { photos?: PhotoEntry[] }) 
           {String(photos.length).padStart(2, "0")}
           <span className="ann-media-sr-only"> 张</span>
         </span>
-        {!enhanced ? (
+        {!usingGallery ? (
           <div className="ann-album-navigation">
             <button type="button" onClick={() => movePhoto(-1)} disabled={active === 0} aria-label="上一张照片" aria-controls={trackId}>←</button>
             <button type="button" onClick={() => movePhoto(1)} disabled={active >= photos.length - 1} aria-label="下一张照片" aria-controls={trackId}>→</button>
