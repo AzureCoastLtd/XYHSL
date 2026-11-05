@@ -1,0 +1,410 @@
+.ann-milestone-section {
+  position: relative;
+  padding: 80px 24px 112px;
+  color: var(--ann-ink);
+  font-family: var(--ann-serif);
+  scroll-margin-top: 64px;
+}
+
+.ann-milestone-inner {
+  width: min(1120px, 100%);
+  margin-inline: auto;
+}
+
+.ann-milestone-scene {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 48px 64px;
+  padding-bottom: 80px;
+  isolation: isolate;
+}
+
+.ann-milestone-atmosphere {
+  position: absolute;
+  inset: -64px -80px 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse at 43% 48%, #000 12%, transparent 72%);
+}
+
+.ann-milestone-dateline {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--ann-line);
+}
+
+.ann-milestone-dateline > span {
+  color: var(--ann-muted);
+  font-family: var(--ann-sans);
+  font-size: 13px;
+  line-height: 24px;
+}
+
+.ann-milestone-dateline time {
+  color: var(--ann-gold);
+  font-family: var(--ann-display);
+  font-size: 26px;
+  line-height: 32px;
+  letter-spacing: .04em;
+  font-variant-numeric: lining-nums tabular-nums;
+  white-space: nowrap;
+}
+
+.ann-milestone-number-wrap {
+  position: relative;
+  min-width: 0;
+}
+
+.ann-milestone-number {
+  position: relative;
+  display: grid;
+  width: fit-content;
+  max-width: 100%;
+  margin-left: -8px;
+  padding: 12px 12px 24px 0;
+  overflow: hidden;
+  font-family: var(--ann-display);
+  font-size: clamp(148px, 23vw, 282px);
+  font-weight: 400;
+  line-height: .94;
+  letter-spacing: -.065em;
+  font-variant-numeric: lining-nums;
+}
+
+.ann-milestone-imprint,
+.ann-milestone-grain,
+.ann-milestone-foil {
+  display: block;
+  grid-area: 1 / 1;
+  padding-right: .08em;
+  white-space: nowrap;
+}
+
+.ann-milestone-imprint {
+  color: rgba(229, 192, 156, .10);
+  -webkit-text-stroke: .7px rgba(235, 197, 161, .48);
+  text-shadow: -1px 2px 0 rgba(0, 0, 0, .65);
+}
+
+.ann-milestone-grain {
+  z-index: 2;
+  background: radial-gradient(circle, #fae7ca 0 1.1px, transparent 1.7px) 0 0 / 6px 6px;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ann-milestone-foil {
+  background: linear-gradient(126deg, #bb8b78 2%, #f6dfbc 25%, #e8c19c 48%, #bd897c 70%, #f3d8b2 98%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.ann-milestone-press-light {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 48.5%, rgba(255, 228, 195, .28) 50%, transparent 51.5%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ann-milestone-number[data-impression="waiting"] .ann-milestone-foil {
+  clip-path: inset(0 100% 0 0);
+}
+
+.ann-milestone-number[data-impression="revealed"] .ann-milestone-grain {
+  animation: ann-milestone-condense 1900ms var(--ann-ease-paper) both;
+}
+
+.ann-milestone-number[data-impression="revealed"] .ann-milestone-foil {
+  animation: ann-milestone-impress 1900ms 300ms var(--ann-ease-paper) both;
+}
+
+.ann-milestone-number[data-impression="revealed"] .ann-milestone-press-light {
+  animation: ann-milestone-press 1900ms 300ms var(--ann-ease-paper) both;
+}
+
+.ann-milestone-count-caption {
+  margin: 8px 0 0;
+  padding-left: 4px;
+  color: var(--ann-muted);
+  font-size: 16px;
+  line-height: 28px;
+}
+
+.ann-milestone-intro {
+  position: relative;
+  padding-top: 8px;
+}
+
+.ann-milestone-label {
+  display: block;
+  margin-bottom: 20px;
+  color: var(--ann-gold);
+  font-family: var(--ann-sans);
+  font-size: 11px;
+  line-height: 20px;
+  letter-spacing: .15em;
+}
+
+.ann-milestone-intro h2 {
+  margin: 0;
+  color: var(--ann-ink);
+  font-size: clamp(38px, 4.5vw, 52px);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+.ann-milestone-intro > p {
+  margin: 24px 0 0;
+  color: var(--ann-muted);
+  font-size: 17px;
+  line-height: 30px;
+  text-wrap: pretty;
+  line-break: strict;
+}
+
+.ann-milestone-letter-layout {
+  display: grid;
+  grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr);
+  align-items: start;
+  gap: 80px;
+}
+
+.ann-milestone-letter-aside {
+  padding: 40px 0 0 4px;
+}
+
+.ann-milestone-letter-rule {
+  display: block;
+  width: 48px;
+  height: 1px;
+  margin-bottom: 32px;
+  background: var(--ann-line-strong);
+}
+
+.ann-milestone-letter-caption {
+  margin: 0;
+  color: var(--ann-ink);
+  font-size: 24px;
+  line-height: 1.6;
+  text-wrap: balance;
+}
+
+.ann-milestone-letter-aside > p:not(.ann-milestone-letter-caption) {
+  margin: 24px 0 0;
+  color: var(--ann-muted);
+  font-size: 16px;
+  line-height: 28px;
+}
+
+.ann-milestone-letter-number {
+  display: block;
+  margin-top: 40px;
+  color: var(--ann-soft);
+  font-family: var(--ann-sans);
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.ann-milestone-letter-artifact {
+  min-width: 0;
+}
+
+@keyframes ann-milestone-condense {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(1.12);
+    filter: blur(7px);
+  }
+  28% {
+    opacity: .9;
+  }
+  64% {
+    opacity: .8;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes ann-milestone-impress {
+  0% {
+    clip-path: inset(0 100% 0 0);
+    filter: blur(3px);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    filter: blur(0);
+  }
+}
+
+@keyframes ann-milestone-press {
+  0% {
+    opacity: 0;
+    transform: translateX(-55%);
+  }
+  22% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(55%);
+  }
+}
+
+.ann-milestone-section[data-reduced-motion] .ann-milestone-grain,
+.ann-milestone-section[data-reduced-motion] .ann-milestone-press-light {
+  animation: none;
+  opacity: 0;
+}
+
+.ann-milestone-section[data-reduced-motion] .ann-milestone-foil {
+  animation: none;
+  clip-path: none;
+  filter: none;
+}
+
+@media (max-width: 1000px) {
+  .ann-milestone-scene {
+    gap: 40px 36px;
+  }
+
+  .ann-milestone-number {
+    font-size: clamp(140px, 22vw, 230px);
+  }
+
+  .ann-milestone-intro > p {
+    font-size: 16px;
+    line-height: 28px;
+  }
+
+  .ann-milestone-intro > p br {
+    display: none;
+  }
+
+  .ann-milestone-letter-layout {
+    gap: 40px;
+  }
+
+  .ann-milestone-letter-caption {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 700px) {
+  .ann-milestone-section {
+    padding: 56px 24px 64px;
+  }
+
+  .ann-milestone-scene {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    padding-bottom: 40px;
+  }
+
+  .ann-milestone-atmosphere {
+    inset: 0 -24px;
+  }
+
+  .ann-milestone-dateline {
+    gap: 16px;
+    padding-bottom: 20px;
+  }
+
+  .ann-milestone-dateline > span {
+    font-size: 12px;
+    line-height: 20px;
+  }
+
+  .ann-milestone-dateline time {
+    font-size: 22px;
+    line-height: 28px;
+    letter-spacing: .02em;
+  }
+
+  .ann-milestone-number {
+    margin-left: -4px;
+    padding-bottom: 16px;
+    font-size: clamp(138px, 42vw, 226px);
+  }
+
+  .ann-milestone-count-caption {
+    margin-top: 0;
+    padding-left: 0;
+    font-size: 15px;
+  }
+
+  .ann-milestone-intro {
+    padding-top: 4px;
+  }
+
+  .ann-milestone-label {
+    margin-bottom: 12px;
+  }
+
+  .ann-milestone-intro h2 {
+    font-size: 36px;
+    line-height: 1.35;
+  }
+
+  .ann-milestone-intro > p {
+    max-width: 24em;
+    margin-top: 20px;
+  }
+
+  .ann-milestone-letter-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .ann-milestone-letter-aside {
+    padding: 0;
+  }
+
+  .ann-milestone-letter-rule {
+    margin-bottom: 24px;
+  }
+
+  .ann-milestone-letter-caption {
+    font-size: 22px;
+  }
+
+  .ann-milestone-letter-aside > p:not(.ann-milestone-letter-caption) {
+    margin-top: 12px;
+  }
+
+  .ann-milestone-letter-number {
+    margin-top: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ann-milestone-number[data-impression] .ann-milestone-grain,
+  .ann-milestone-number[data-impression] .ann-milestone-press-light {
+    animation: none;
+    opacity: 0;
+  }
+
+  .ann-milestone-number[data-impression] .ann-milestone-foil {
+    animation: none;
+    clip-path: none;
+    filter: none;
+  }
+}
