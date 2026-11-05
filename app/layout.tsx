@@ -3,8 +3,12 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "❤️XYHSL❤️",
-  description: "",
+  title: "XYHSL · 一封写给未来的信",
+  description: "这封信写在纸上，而我们的故事藏在这里。",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function RootLayout({
@@ -13,28 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head>
-        {/* 预加载 MediaPipe 资源 */}
-        <link
-          rel="preload"
-          href="https://pub-1e3a5383825649febccf7a08a8d30a57.r2.dev/wasm/vision_wasm_internal.wasm"
-          as="fetch"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="https://pub-1e3a5383825649febccf7a08a8d30a57.r2.dev/wasm/vision_wasm_internal.js"
-          as="script"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="https://pub-1e3a5383825649febccf7a08a8d30a57.r2.dev/gesture_recognizer.task"
-          as="fetch"
-          crossOrigin="anonymous"
-        />
-      </head>
+    <html lang="zh-CN">
       <body>{children}</body>
     </html>
   );

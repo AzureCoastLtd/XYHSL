@@ -1,25 +1,16 @@
-"use client";
+import type { Metadata } from "next";
 
-import dynamic from "next/dynamic";
-import GestureControls from "../components/interaction/GestureControls";
-import WishesInput from "../components/ui/WishesInput";
+import AnniversaryExperience from "../components/anniversary/AnniversaryExperience";
 
-const GeometricChristmasTreeScene = dynamic(
-  () => import("../components/scenes/GeometricChristmasTreeScene"),
-  { ssr: false }
-);
-
-const MusicPlayer = dynamic(() => import("../components/ui/MusicPlayer"), {
-  ssr: false,
-});
+export const metadata: Metadata = {
+  title: "1000 天 · 一封互动情书",
+  description: "这封信写在纸上，而我们的故事藏在这里。",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function Home() {
-  return (
-    <main className="w-full h-screen overflow-hidden bg-[#000000] relative">
-      <GeometricChristmasTreeScene />
-      <GestureControls />
-      <WishesInput />
-      <MusicPlayer />
-    </main>
-  );
+  return <AnniversaryExperience />;
 }
