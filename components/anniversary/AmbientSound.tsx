@@ -23,7 +23,7 @@ export default function AmbientSound() {
 
   useEffect(() => {
     mountedRef.current = true;
-    // A song or video inside the letter always takes precedence over ambient sound.
+    // Starting a song or video pauses the ambient sound.
     const pauseForMedia = () => {
       if (contextRef.current) stop();
     };
@@ -53,6 +53,9 @@ export default function AmbientSound() {
       master.connect(context.destination);
       await context.resume();
       if (!mountedRef.current || contextRef.current !== context) return;
+      for (const media of document.querySelectorAll<HTMLMediaElement>("audio, video")) {
+        if (!media.paused) media.pause();
+      }
 
       let step = 0;
       const note = () => {
