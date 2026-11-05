@@ -1249,17 +1249,15 @@ button {
   }
 
   .ann-progress-line {
-    top: 19px;
-    right: 25px;
-    bottom: auto;
-    left: 25px;
-    width: auto;
-    height: 1px;
+    display: none;
   }
 
   .ann-progress-item {
     z-index: 1;
-    padding: 3px 0;
+    justify-content: center;
+    min-width: 40px;
+    min-height: 44px;
+    padding: 0 2px;
   }
 
   .ann-progress-dot {
@@ -1272,9 +1270,11 @@ button {
   }
 
   .ann-hero {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     min-height: 100svh;
-    padding: 23vh 22px 80px;
+    padding: 16vh 22px 104px;
   }
 
   .ann-hero-copy {
@@ -1305,12 +1305,14 @@ button {
   }
 
   .ann-envelope {
+    position: relative;
     top: auto;
-    right: 18px;
-    bottom: 23vh;
+    right: auto;
+    bottom: auto;
+    align-self: flex-end;
     width: 195px;
     height: 139px;
-    margin: 0;
+    margin: 30px 6px 0 0;
   }
 
   .ann-envelope-paper {

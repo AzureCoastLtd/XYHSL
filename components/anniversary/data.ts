@@ -1,5 +1,13 @@
 export type TimelineTone = "memory" | "milestone";
 
+export type TimelineMedia =
+  | { type: "photos" }
+  | { type: "sticker"; label: string; caption: string }
+  | { type: "ambient" }
+  | { type: "audio"; title: string; note: string }
+  | { type: "video"; title: string; note: string }
+  | { type: "letter" };
+
 export type TimelineEntry = {
   id: string;
   date: string;
@@ -7,7 +15,7 @@ export type TimelineEntry = {
   title: string;
   description: string;
   tone: TimelineTone;
-  sticker?: string;
+  media?: TimelineMedia[];
 };
 
 export type FutureEntry = {
@@ -33,15 +41,19 @@ export const timelineEntries: TimelineEntry[] = [
     title: "从相识，到正式成为我们",
     description: "这一天是第一天。以后每一个值得记住的日子，都可以继续贴进这封信里。",
     tone: "memory",
+    media: [{ type: "photos" }],
   },
   {
     id: "tea",
     date: "A SMALL MEMORY",
     label: "THE FIRST STICKER",
     title: "一杯霸王茶姬，也可以成为故事的开头",
-    description: "有些回忆不需要很大。一杯奶茶、一句当时的话，就足够让时间留下形状。",
+    description: "有些回忆不需要很大。一杯奶茶，就足够让时间留下形状。",
     tone: "memory",
-    sticker: "霸王茶姬",
+    media: [
+      { type: "sticker", label: "霸王茶姬", caption: "我们故事的第一杯" },
+      { type: "ambient" },
+    ],
   },
   {
     id: "letter",
@@ -50,6 +62,10 @@ export const timelineEntries: TimelineEntry[] = [
     title: "这封信不只写在纸上",
     description: "图片、声音、视频和没有说完的话，会沿着时间线慢慢出现。",
     tone: "memory",
+    media: [
+      { type: "audio", title: "《青花瓷》", note: "音频文件准备好后，可以在这里点击播放。" },
+      { type: "video", title: "视频回忆插槽", note: "等你把某一段动态回忆放进这封信。" },
+    ],
   },
   {
     id: "thousand",
@@ -58,6 +74,7 @@ export const timelineEntries: TimelineEntry[] = [
     title: "1000 天只是我们的一小部分",
     description: "我们还有无数个 1000 天。",
     tone: "milestone",
+    media: [{ type: "letter" }],
   },
 ];
 
@@ -89,10 +106,18 @@ export const futureEntries: FutureEntry[] = [
 ];
 
 export const photoEntries = [
-  { src: "/images/1.webp", alt: "一段还没有命名的回忆" },
-  { src: "/images/2.webp", alt: "一起走过的某个夜晚" },
-  { src: "/images/3.webp", alt: "一起去过的远方" },
-  { src: "/images/4.webp", alt: "留在相册里的某一天" },
-  { src: "/images/5.webp", alt: "一张待补充日期的照片" },
-  { src: "/images/6.webp", alt: "我们的另一页回忆" },
+  { src: "/images/1.webp", alt: "照片 1，待补充说明" },
+  { src: "/images/2.webp", alt: "照片 2，待补充说明" },
+  { src: "/images/3.webp", alt: "照片 3，待补充说明" },
+  { src: "/images/4.webp", alt: "照片 4，待补充说明" },
+  { src: "/images/5.webp", alt: "照片 5，待补充说明" },
+  { src: "/images/6.webp", alt: "照片 6，待补充说明" },
 ];
+
+export const letterContent = {
+  greeting: "宝宝，",
+  opening: "这封信写在纸上，而我们的故事藏在这里。",
+  promise: "1000 天只是我们的一小部分，",
+  promiseLine: "我们还有无数个 1000 天。",
+  sign: "— 待你继续写下去",
+};

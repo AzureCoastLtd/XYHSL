@@ -10,7 +10,13 @@ import {
   useRef,
   useState,
 } from "react";
-import { futureEntries, photoEntries, timelineEntries } from "./data";
+import {
+  type TimelineMedia,
+  futureEntries,
+  letterContent,
+  photoEntries,
+  timelineEntries,
+} from "./data";
 
 type Star = {
   x: number;
@@ -205,37 +211,37 @@ function PhotoDeck() {
   );
 }
 
-function TeaSticker() {
+function TeaSticker({ label, caption }: { label: string; caption: string }) {
   return (
-    <div className="ann-tea-sticker" role="img" aria-label="霸王茶姬记忆贴纸">
+    <div className="ann-tea-sticker" role="img" aria-label={`${label} 记忆贴纸`}>
       <div className="ann-tea-cup">
         <span className="ann-tea-lid" />
         <span className="ann-tea-logo">茶</span>
         <span className="ann-tea-label">FIRST SIP</span>
       </div>
       <span className="ann-sticker-tape" aria-hidden="true" />
-      <span className="ann-tea-copy">霸王茶姬<br />我们的第一杯</span>
+      <span className="ann-tea-copy">{label}<br />{caption}</span>
     </div>
   );
 }
 
-function AudioSlot() {
+function AudioSlot({ title, note }: { title: string; note: string }) {
   return (
     <div className="ann-media-slot ann-audio-slot">
       <span className="ann-media-icon" aria-hidden="true">♪</span>
       <div>
         <span className="ann-media-kicker">A SONG FOR THIS PAGE</span>
-        <strong>《青花瓷》</strong>
-        <p>音频文件准备好后，可以在这里点击播放。</p>
+        <strong>{title}</strong>
+        <p>{note}</p>
       </div>
-      <button type="button" disabled aria-label="青花瓷音频等待替换">
+      <button type="button" disabled aria-label={`${title} 音频等待替换`}>
         等待替换
       </button>
     </div>
   );
 }
 
-function VideoSlot() {
+function VideoSlot({ title, note }: { title: string; note: string }) {
   return (
     <div className="ann-media-slot ann-video-slot">
       <span className="ann-video-frame" aria-hidden="true">
@@ -243,9 +249,21 @@ function VideoSlot() {
       </span>
       <div>
         <span className="ann-media-kicker">A MOVING MEMORY</span>
-        <strong>视频回忆插槽</strong>
-        <p>等你把某一段动态回忆放进这封信。</p>
+        <strong>{title}</strong>
+        <p>{note}</p>
       </div>
+    </div>
+  );
+}
+
+function LetterCard() {
+  return (
+    <div className="ann-letter-card">
+      <span className="ann-letter-mark">A NOTE FOR YOU</span>
+      <p>{letterContent.greeting}</p>
+      <p>{letterContent.opening}</p>
+      <p>{letterContent.promise}<br />{letterContent.promiseLine}</p>
+      <span className="ann-letter-sign">{letterContent.sign}</span>
     </div>
   );
 }
@@ -253,17 +271,23 @@ function VideoSlot() {
 function AmbientMusic() {
   const contextRef = useRef<AudioContext | null>(null);
   const timerRef = useRef<number | null>(null);
+  const startingRef = useRef(false);
+  const unmountedRef = useRef(false);
   const [playing, setPlaying] = useState(false);
   const [supported, setSupported] = useState(true);
 
   useEffect(() => {
+    unmountedRef.current = false;
     return () => {
+      unmountedRef.current = true;
       if (timerRef.current) window.clearInterval(timerRef.current);
       void contextRef.current?.close();
     };
   }, []);
 
   const toggle = async () => {
+    if (startingRef.current) return;
+
     if (playing) {
       if (timerRef.current) window.clearInterval(timerRef.current);
       timerRef.current = null;
@@ -282,6 +306,7 @@ function AmbientMusic() {
       return;
     }
 
+    startingRef.current = true;
     const context = new AudioContextConstructor();
     const master = context.createGain();
     master.gain.setValueAtTime(0.0001, context.currentTime);
@@ -308,8 +333,16 @@ function AmbientMusic() {
     };
 
     await context.resume();
+
+    if (unmountedRef.current || contextRef.current !== context) {
+      startingRef.current = false;
+      await context.close();
+      return;
+    }
+
     playPhrase();
     timerRef.current = window.setInterval(playPhrase, 3200);
+    startingRef.current = false;
     setPlaying(true);
   };
 
@@ -327,7 +360,25 @@ function AmbientMusic() {
   );
 }
 
+function renderMedia(media: TimelineMedia) {
+  if (media.type === "photos") return <PhotoDeck key="photos" />;
+  if (media.type === "sticker") {
+    return <TeaSticker key="sticker" label={media.label} caption={media.caption} />;
+  }
+  if (media.type === "ambient") return <AmbientMusic key="ambient" />;
+  if (media.type === "audio") {
+    return <AudioSlot key="audio" title={media.title} note={media.note} />;
+  }
+  if (media.type === "video") {
+    return <VideoSlot key="video" title={media.title} note={media.note} />;
+  }
+  return <LetterCard key="letter" />;
+}
+
 function TimelineEntryCard({ entry }: { entry: (typeof timelineEntries)[number] }) {
+  const inlineMedia = entry.media?.filter((media) => media.type === "sticker" || media.type === "ambient") ?? [];
+  const stackedMedia = entry.media?.filter((media) => media.type !== "sticker" && media.type !== "ambient") ?? [];
+
   return (
     <article id={entry.id} className={`ann-entry ann-entry-${entry.tone}`}>
       <div className="ann-entry-node" aria-hidden="true"><span /></div>
@@ -339,34 +390,18 @@ function TimelineEntryCard({ entry }: { entry: (typeof timelineEntries)[number] 
         <span className="ann-kicker">{entry.label}</span>
         <h2><BlurReveal text={entry.title} /></h2>
         <p>{entry.description}</p>
-        {entry.id === "become-us" ? <PhotoDeck /> : null}
-        {entry.id === "tea" ? (
-          <div className="ann-memory-tools">
-            <TeaSticker />
-            <AmbientMusic />
-          </div>
+        {inlineMedia.length ? (
+          <div className="ann-memory-tools">{inlineMedia.map(renderMedia)}</div>
         ) : null}
-        {entry.id === "letter" ? (
-          <div className="ann-letter-tools">
-            <AudioSlot />
-            <VideoSlot />
-          </div>
-        ) : null}
-        {entry.id === "thousand" ? (
-          <div className="ann-letter-card">
-            <span className="ann-letter-mark">A NOTE FOR YOU</span>
-            <p>宝宝，</p>
-            <p>这封信写在纸上，而我们的故事藏在这里。</p>
-            <p>1000 天只是我们的一小部分，<br />我们还有无数个 1000 天。</p>
-            <span className="ann-letter-sign">— 待你继续写下去</span>
-          </div>
+        {stackedMedia.length ? (
+          <div className="ann-letter-tools">{stackedMedia.map(renderMedia)}</div>
         ) : null}
       </Reveal>
     </article>
   );
 }
 
-function FutureSection() {
+function FutureSection({ reducedMotion }: { reducedMotion: boolean }) {
   return (
     <section id="future" className="ann-future-section">
       <div className="ann-future-glow" aria-hidden="true" />
@@ -389,7 +424,12 @@ function FutureSection() {
       <Reveal className="ann-final-note">
         <span className="ann-final-line" aria-hidden="true" />
         <p>这封信写在纸上，而我们的故事藏在这里。</p>
-        <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+        <button
+          type="button"
+          onClick={() =>
+            window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" })
+          }
+        >
           再看一遍 <span aria-hidden="true">↗</span>
         </button>
         <Link href="/christmas" className="ann-old-gift-link">
@@ -490,7 +530,7 @@ export default function AnniversaryExperience() {
         ))}
       </div>
 
-      <FutureSection />
+      <FutureSection reducedMotion={reducedMotion} />
     </main>
   );
 }

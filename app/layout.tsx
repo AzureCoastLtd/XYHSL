@@ -18,6 +18,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
+      <head>
+        <noscript>
+          <style>{`
+            .ann-reveal { opacity: 1 !important; transform: none !important; }
+            .ann-blur-reveal > span { opacity: 1 !important; filter: none !important; transform: none !important; }
+            .ann-hero-action { display: none; }
+          `}</style>
+        </noscript>
+      </head>
       <body>{children}</body>
     </html>
   );
