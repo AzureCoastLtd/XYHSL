@@ -1,0 +1,228 @@
+.ann-timeline {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, calc(100% - 64px));
+  margin: 0 auto;
+  padding: 48px 0 64px;
+}
+
+.ann-timeline-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--ann-line);
+  color: var(--ann-muted);
+  font-family: var(--ann-sans);
+  font-size: 13px;
+  line-height: 24px;
+}
+
+.ann-timeline-heading > :last-child {
+  color: var(--ann-soft);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+}
+
+.ann-entry {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  align-items: center;
+  gap: clamp(40px, 6vw, 88px);
+  min-height: 0;
+  padding: 80px 0;
+  border-bottom: 1px solid var(--ann-line);
+  scroll-margin-top: 64px;
+}
+
+.ann-entry:last-child {
+  border-bottom: 0;
+}
+
+.ann-entry-content {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  max-width: 480px;
+  text-align: left;
+}
+
+.ann-entry-artifacts {
+  display: grid;
+  grid-column: 2;
+  grid-row: 1;
+  align-items: center;
+  gap: 24px;
+  min-width: 0;
+}
+
+.ann-entry:nth-of-type(even) {
+  grid-template-columns: minmax(0, 1.14fr) minmax(0, 0.86fr);
+}
+
+.ann-entry:nth-of-type(even) .ann-entry-content {
+  grid-column: 2;
+  text-align: left;
+}
+
+.ann-entry:nth-of-type(even) .ann-entry-artifacts {
+  grid-column: 1;
+}
+
+.ann-entry[data-media="photos"] {
+  grid-template-columns: minmax(0, 0.76fr) minmax(0, 1.24fr);
+}
+
+.ann-entry[data-media="photos"]:nth-of-type(odd) {
+  grid-template-columns: minmax(0, 1.24fr) minmax(0, 0.76fr);
+}
+
+.ann-entry-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+  color: var(--ann-muted);
+  font-family: var(--ann-sans);
+  font-size: 12px;
+  line-height: 24px;
+}
+
+.ann-memory-index {
+  padding-right: 4px;
+  color: var(--ann-gold);
+  font-family: var(--ann-display);
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.ann-memory-label {
+  color: var(--ann-rose);
+}
+
+.ann-entry-date {
+  display: inline;
+  padding-top: 0;
+  color: var(--ann-muted);
+  font-family: var(--ann-sans);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  text-align: left;
+}
+
+.ann-entry-content h2 {
+  max-width: 11em;
+  margin: 24px 0;
+  color: var(--ann-ink);
+  font-family: var(--ann-serif);
+  font-size: clamp(40px, 3.7vw, 50px);
+  font-weight: 400;
+  line-height: 1.28;
+  letter-spacing: -0.01em;
+  line-break: strict;
+  text-wrap: balance;
+}
+
+.ann-memory-title-line {
+  display: block;
+}
+
+.ann-entry-description {
+  max-width: 28em;
+  margin: 0;
+  color: var(--ann-muted);
+  font-family: var(--ann-serif);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 30px;
+  letter-spacing: 0;
+  line-break: strict;
+  text-wrap: pretty;
+}
+
+.ann-memory-rule {
+  display: block;
+  width: 48px;
+  height: 1px;
+  margin-top: 28px;
+  background: var(--ann-line-strong);
+}
+
+.ann-entry.ann-entry-text-only .ann-entry-content {
+  grid-column: 1 / -1;
+  max-width: 640px;
+}
+
+@media (max-width: 960px) and (min-width: 761px) {
+  .ann-entry {
+    gap: 40px;
+  }
+
+  .ann-entry-content h2 {
+    font-size: 36px;
+  }
+
+  .ann-entry-meta {
+    gap: 4px 10px;
+  }
+
+  .ann-entry-date {
+    flex-basis: 100%;
+    margin-left: 36px;
+  }
+}
+
+@media (max-width: 760px) {
+  .ann-timeline {
+    width: calc(100% - 40px);
+    padding: 24px 0 40px;
+  }
+
+  .ann-timeline-heading {
+    padding-bottom: 20px;
+    font-size: 12px;
+  }
+
+  .ann-timeline-heading > :last-child {
+    display: none;
+  }
+
+  .ann-entry,
+  .ann-entry:nth-of-type(even),
+  .ann-entry[data-media="photos"],
+  .ann-entry[data-media="photos"]:nth-of-type(odd) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 36px;
+    padding: 64px 0;
+    scroll-margin-top: 48px;
+  }
+
+  .ann-entry .ann-entry-content,
+  .ann-entry:nth-of-type(even) .ann-entry-content,
+  .ann-entry .ann-entry-artifacts,
+  .ann-entry:nth-of-type(even) .ann-entry-artifacts {
+    grid-column: 1;
+    grid-row: auto;
+    max-width: 100%;
+  }
+
+  .ann-entry-content h2 {
+    margin: 20px 0;
+    font-size: clamp(30px, 8.9vw, 38px);
+    line-height: 1.3;
+  }
+
+  .ann-entry-description {
+    max-width: 31em;
+    font-size: 16px;
+    line-height: 28px;
+  }
+
+  .ann-memory-rule {
+    margin-top: 24px;
+  }
+}
