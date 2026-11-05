@@ -1,0 +1,36 @@
+.ann-light-atmosphere,
+.ann-milestone-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ann-light-still {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 85% 0%, rgb(240 210 174 / 10%), transparent 56%),
+    conic-gradient(from 182deg at 92% -20%, transparent 0deg, rgb(240 210 174 / 4%) 26deg, transparent 34deg);
+}
+
+.ann-light-atmosphere .light-rays-container {
+  opacity: .8;
+}
+
+.ann-milestone-halo {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 28%, rgb(224 161 157 / 11%), transparent 52%);
+}
+
+.ann-milestone-atmosphere .particles-container {
+  position: absolute;
+  inset: 0;
+}
+
+@media (max-width: 760px) {
+  .ann-light-still { opacity: .65; }
+  .ann-milestone-halo { opacity: .75; }
+}

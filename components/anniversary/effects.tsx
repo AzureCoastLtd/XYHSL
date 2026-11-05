@@ -1,18 +1,11 @@
 "use client";
 
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type CSSProperties, type ReactNode, type RefObject, useEffect, useRef, useState } from "react";
 
-type Star = {
-  x: number;
-  y: number;
-  radius: number;
-  alpha: number;
-  speed: number;
-  phase: number;
-};
+let webGLAvailable: boolean | undefined;
 
 export function useReducedMotion() {
-  const [reduced, setReduced] = useState(false);
+  const [reduced, setReduced] = useState(true);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -25,121 +18,93 @@ export function useReducedMotion() {
   return reduced;
 }
 
-export function Starfield() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d");
-    if (!canvas || !context) return;
-
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let animationFrame = 0;
-    let width = 0;
-    let height = 0;
-    let stars: Star[] = [];
-    let pointerX = 0.5;
-    let pointerY = 0.5;
-
-    const seed = (value: number) => {
-      const next = Math.sin(value * 12.9898) * 43758.5453;
-      return next - Math.floor(next);
-    };
-
-    const resize = () => {
-      const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = Math.max(1, Math.floor(width * ratio));
-      canvas.height = Math.max(1, Math.floor(height * ratio));
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      const count = width < 700 ? 48 : 90;
-      stars = Array.from({ length: count }, (_, index) => ({
-        x: seed(index + 1),
-        y: seed(index + 101),
-        radius: 0.35 + seed(index + 201) * 1.45,
-        alpha: 0.22 + seed(index + 301) * 0.58,
-        speed: 0.06 + seed(index + 401) * 0.18,
-        phase: seed(index + 501) * Math.PI * 2,
-      }));
-    };
-
-    const draw = (time: number) => {
-      context.clearRect(0, 0, width, height);
-      const seconds = time / 1000;
-
-      for (const star of stars) {
-        const drift = reduced ? 0 : Math.sin(seconds * star.speed + star.phase) * 0.0018;
-        const x = (star.x + drift + (pointerX - 0.5) * star.radius * 0.003) * width;
-        const y = (star.y + drift * 0.45 + (pointerY - 0.5) * star.radius * 0.002) * height;
-        const twinkle = reduced ? 1 : 0.72 + Math.sin(seconds * star.speed * 4 + star.phase) * 0.28;
-        context.beginPath();
-        context.fillStyle = `rgba(244, 220, 189, ${star.alpha * twinkle})`;
-        context.arc(x, y, star.radius, 0, Math.PI * 2);
-        context.fill();
-      }
-
-      if (!reduced) animationFrame = window.requestAnimationFrame(draw);
-    };
-
-    const onPointerMove = (event: PointerEvent) => {
-      pointerX = event.clientX / Math.max(window.innerWidth, 1);
-      pointerY = event.clientY / Math.max(window.innerHeight, 1);
-    };
-
-    resize();
-    draw(0);
-    if (!reduced) animationFrame = window.requestAnimationFrame(draw);
-    window.addEventListener("resize", resize);
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
-
-    return () => {
-      window.cancelAnimationFrame(animationFrame);
-      window.removeEventListener("resize", resize);
-      window.removeEventListener("pointermove", onPointerMove);
-    };
-  }, []);
-
-  return <canvas ref={canvasRef} className="ann-starfield" aria-hidden="true" />;
-}
-
-export function Reveal({ children, className = "" }: { children: ReactNode; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+// Canvas enhancement is opt-in after hydration. The DOM remains the default reading surface.
+export function useVisualMode(ref: RefObject<HTMLElement | null>) {
+  const [mode, setMode] = useState({ enhanced: false, compact: true, reduced: true });
 
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -8%" },
-    );
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
+    const compact = window.matchMedia("(max-width: 760px)");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let visible = false;
 
+    const update = () => {
+      const eligible = visible && !document.hidden && !compact.matches && !reduced.matches;
+      if (eligible && webGLAvailable === undefined) {
+        try {
+          const probe = document.createElement("canvas").getContext("webgl2", { powerPreference: "low-power" });
+          webGLAvailable = Boolean(probe);
+          probe?.getExtension("WEBGL_lose_context")?.loseContext();
+        } catch {
+          webGLAvailable = false;
+        }
+      }
+      setMode({
+        enhanced: eligible && webGLAvailable === true,
+        compact: compact.matches,
+        reduced: reduced.matches,
+      });
+    };
+
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      update();
+    });
+    observer.observe(element);
+    compact.addEventListener("change", update);
+    reduced.addEventListener("change", update);
+    document.addEventListener("visibilitychange", update);
+    update();
+
+    return () => {
+      observer.disconnect();
+      compact.removeEventListener("change", update);
+      reduced.removeEventListener("change", update);
+      document.removeEventListener("visibilitychange", update);
+    };
+  }, [ref]);
+
+  return mode;
+}
+
+const stars = Array.from({ length: 40 }, (_, index) => ({
+  left: `${((index * 61 + 13) % 997) / 10}%`,
+  top: `${((index * 127 + 37) % 991) / 10}%`,
+  opacity: 0.15 + (index % 5) * 0.08,
+  width: index % 7 === 0 ? 2 : 1,
+  height: index % 7 === 0 ? 2 : 1,
+} satisfies CSSProperties));
+
+export function Starfield() {
   return (
-    <div ref={ref} className={`ann-reveal ${visible ? "is-visible" : ""} ${className}`}>
-      {children}
+    <div className="ann-starfield" aria-hidden="true">
+      {stars.map((style, index) => <i key={index} style={style} />)}
     </div>
   );
 }
 
-export function BlurReveal({ text, className = "" }: { text: string; className?: string }) {
-  return (
-    <span className={`ann-blur-reveal ${className}`} aria-label={text}>
-      {Array.from(text).map((character, index) => (
-        <span key={`${character}-${index}`} aria-hidden="true">
-          {character === " " ? "\u00A0" : character}
-        </span>
-      ))}
-    </span>
-  );
+export function Reveal({ children, className = "" }: { children: ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let animation: Animation | undefined;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      animation = element.animate(
+        [{ opacity: 0.7, transform: "translateY(18px)" }, { opacity: 1, transform: "none" }],
+        { duration: 560, easing: "cubic-bezier(.16,1,.3,1)" },
+      );
+      observer.disconnect();
+    }, { threshold: 0.08 });
+    observer.observe(element);
+    return () => {
+      observer.disconnect();
+      animation?.cancel();
+    };
+  }, []);
+
+  return <div ref={ref} className={`ann-reveal is-visible ${className}`}>{children}</div>;
 }

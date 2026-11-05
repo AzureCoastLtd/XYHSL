@@ -1,30 +1,36 @@
 "use client";
 
-import Link from "next/link";
+import AmbientSound from "./AmbientSound";
 import { timelineEntries } from "./data";
 
 const progressEntries = [
-  { id: "opening", label: "OPEN" },
-  ...timelineEntries.map((entry) => ({ id: entry.id, label: entry.date })),
-  { id: "future", label: "NEXT" },
+  { id: "opening", label: "启封" },
+  ...timelineEntries.map((entry) => ({ id: entry.id, label: entry.navLabel || entry.date })),
+  { id: "future", label: "未完待续" },
 ];
 
 export default function ProgressRail({ activeId }: { activeId: string }) {
+  const activeIndex = Math.max(0, progressEntries.findIndex((entry) => entry.id === activeId));
+
   return (
-    <nav className="ann-progress" aria-label="信件进度">
-      <span className="ann-progress-line" aria-hidden="true" />
-      {progressEntries.map((entry) => (
-        <a
-          key={entry.id}
-          className={`ann-progress-item ${activeId === entry.id ? "is-active" : ""}`}
-          href={`#${entry.id}`}
-          aria-label={`跳转到 ${entry.label}`}
-          aria-current={activeId === entry.id ? "step" : undefined}
-        >
-          <span className="ann-progress-dot" aria-hidden="true" />
-          <span className="ann-progress-label">{entry.label}</span>
-        </a>
-      ))}
+    <nav className="ann-progress" aria-label="信件章节导航">
+      <div className="ann-progress-current" aria-live="polite" aria-atomic="true">
+        <strong>{progressEntries[activeIndex].label}</strong>
+        <span>{String(activeIndex + 1).padStart(2, "0")} / {String(progressEntries.length).padStart(2, "0")}</span>
+      </div>
+      <div className="ann-progress-links">
+        {progressEntries.map((entry, index) => (
+          <a
+            key={entry.id}
+            className={`ann-progress-item ${activeId === entry.id ? "is-active" : ""} ${index < activeIndex ? "is-past" : ""}`}
+            href={`#${entry.id}`}
+            aria-label={`跳转至${entry.label}`}
+            aria-current={activeId === entry.id ? "step" : undefined}
+          >
+            <span className="ann-progress-label">{entry.label}</span>
+          </a>
+        ))}
+      </div>
     </nav>
   );
 }
@@ -32,12 +38,11 @@ export default function ProgressRail({ activeId }: { activeId: string }) {
 export function SiteHeader() {
   return (
     <header className="ann-header">
-      <Link href="/" className="ann-brand" aria-label="回到 1000 天首页">
-        XYHSL <span>1000 DAYS</span>
-      </Link>
-      <Link href="/christmas" className="ann-header-link">
-        旧礼物 <span aria-hidden="true">↗</span>
-      </Link>
+      <a href="#opening" className="ann-brand" aria-label="回到信封">
+        <span className="ann-brand-mark" aria-hidden="true">∞</span>
+        <span>一封，只写给你的信</span>
+      </a>
+      <AmbientSound />
     </header>
   );
 }

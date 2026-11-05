@@ -1,6 +1,6 @@
 import "./globals.css";
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
   title: "XYHSL · 一封写给未来的信",
@@ -11,6 +11,13 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#0b080e",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -18,15 +25,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <head>
-        <noscript>
-          <style>{`
-            .ann-reveal { opacity: 1 !important; transform: none !important; }
-            .ann-blur-reveal > span { opacity: 1 !important; filter: none !important; transform: none !important; }
-            .ann-hero-action { display: none; }
-          `}</style>
-        </noscript>
-      </head>
       <body>{children}</body>
     </html>
   );
