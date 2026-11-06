@@ -1,11 +1,11 @@
 "use client";
 
-import { type TimelineEntry, timelineEntries } from "./data";
+import type { AnniversaryContent, TimelineEntry } from "./data";
 import { Reveal } from "./effects";
 import { renderMedia } from "./media";
 import "./timeline.css";
 
-function TimelineEntryCard({ entry, index }: { entry: TimelineEntry; index: number }) {
+function TimelineEntryCard({ entry, index, content }: { entry: TimelineEntry; index: number; content: AnniversaryContent }) {
   const hasMedia = Boolean(entry.media?.length);
   const isDate = /^\d{4}\.\d{2}\.\d{2}$/.test(entry.date);
 
@@ -30,17 +30,17 @@ function TimelineEntryCard({ entry, index }: { entry: TimelineEntry; index: numb
         <p className="ann-entry-description">{entry.description}</p>
         <span className="ann-memory-rule" aria-hidden="true" />
       </Reveal>
-      {hasMedia ? <div className="ann-entry-artifacts">{entry.media?.map((media, mediaIndex) => renderMedia(media, mediaIndex))}</div> : null}
+      {hasMedia ? <div className="ann-entry-artifacts">{entry.media?.map((media, mediaIndex) => renderMedia(media, mediaIndex, content))}</div> : null}
     </article>
   );
 }
 
-export default function TimelineSection() {
+export default function TimelineSection({ content }: { content: AnniversaryContent }) {
   return (
     <section className="ann-timeline" aria-label="那些关于我们的事">
       <div className="ann-timeline-heading"><span>把小事，写成我们的故事</span><span aria-hidden="true">MEMORIES, KEPT CLOSE</span></div>
-      {timelineEntries.filter((entry) => entry.tone !== "milestone").map((entry, index) => (
-        <TimelineEntryCard key={entry.id} entry={entry} index={index} />
+      {content.timelineEntries.filter((entry) => entry.tone !== "milestone").map((entry, index) => (
+        <TimelineEntryCard key={entry.id} entry={entry} index={index} content={content} />
       ))}
     </section>
   );

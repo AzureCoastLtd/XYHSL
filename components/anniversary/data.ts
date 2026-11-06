@@ -1,7 +1,10 @@
+import "server-only";
+
 export type TimelineTone = "memory" | "milestone";
 
 export type PhotoEntry = {
   src: string;
+  previewSrc?: string;
   alt: string;
   caption: string;
 };
@@ -33,6 +36,13 @@ export type FutureEntry = {
   description: string;
 };
 
+export const anniversaryDates = {
+  start: "2024.02.23",
+  startLabel: "2024 年 2 月 23 日",
+  milestone: "2026.11.18",
+  milestoneLabel: "2026 年 11 月 18 日",
+};
+
 export const timelineEntries: TimelineEntry[] = [
   {
     id: "first-page",
@@ -47,7 +57,7 @@ export const timelineEntries: TimelineEntry[] = [
   },
   {
     id: "become-us",
-    date: "2024.02.23",
+    date: anniversaryDates.start,
     navLabel: "在一起",
     label: "正式成为我们",
     title: "从那天起，是我们。",
@@ -98,7 +108,7 @@ export const timelineEntries: TimelineEntry[] = [
   },
   {
     id: "thousand",
-    date: "2026.11.18",
+    date: anniversaryDates.milestone,
     label: "我们的第 1000 天",
     title: "1000 天只是我们的一小部分",
     navLabel: "第1000天",
@@ -137,15 +147,15 @@ export const futureEntries: FutureEntry[] = [
 ];
 
 export const photoEntries: PhotoEntry[] = [
-  { src: "/images/1.webp", alt: "花束与粉色气球旁，我们依偎着的合照", caption: "把这一刻收藏" },
-  { src: "/images/2.webp", alt: "红灯笼下，我们亲吻的合照", caption: "眼里都是你" },
-  { src: "/images/3.webp", alt: "蓝天白云与城市前，我们并肩的合照", caption: "和你站在一起" },
-  { src: "/images/4.webp", alt: "夜晚的灯光前，我们靠近彼此的合照", caption: "靠近一点，再近一点" },
-  { src: "/images/5.webp", alt: "点点灯光前，我们微笑着的合照", caption: "喜欢这样的我们" },
-  { src: "/images/6.webp", alt: "抱着花束，我们相视而笑的合照", caption: "这一刻，刚刚好" },
-  { src: "/images/7.webp", alt: "雪地里，我们与雪人和小狗的合影", caption: "把冬天也收藏" },
-  { src: "/images/8.webp", alt: "行李箱旁，我们拥抱的合照", caption: "把拥抱留下" },
-  { src: "/images/9.webp", alt: "阳光下，我们靠近彼此的合照", caption: "和你同框的风景" },
+  { src: "/images/1.webp", previewSrc: "/images/previews/1.webp", alt: "花束与粉色气球旁，我们依偎着的合照", caption: "把这一刻收藏" },
+  { src: "/images/2.webp", previewSrc: "/images/previews/2.webp", alt: "红灯笼下，我们亲吻的合照", caption: "眼里都是你" },
+  { src: "/images/3.webp", previewSrc: "/images/previews/3.webp", alt: "蓝天白云与城市前，我们并肩的合照", caption: "和你站在一起" },
+  { src: "/images/4.webp", previewSrc: "/images/previews/4.webp", alt: "夜晚的灯光前，我们靠近彼此的合照", caption: "靠近一点，再近一点" },
+  { src: "/images/5.webp", previewSrc: "/images/previews/5.webp", alt: "点点灯光前，我们微笑着的合照", caption: "喜欢这样的我们" },
+  { src: "/images/6.webp", previewSrc: "/images/previews/6.webp", alt: "抱着花束，我们相视而笑的合照", caption: "这一刻，刚刚好" },
+  { src: "/images/7.webp", previewSrc: "/images/previews/7.webp", alt: "雪地里，我们与雪人和小狗的合影", caption: "把冬天也收藏" },
+  { src: "/images/8.webp", previewSrc: "/images/previews/8.webp", alt: "行李箱旁，我们拥抱的合照", caption: "把拥抱留下" },
+  { src: "/images/9.webp", previewSrc: "/images/previews/9.webp", alt: "阳光下，我们靠近彼此的合照", caption: "和你同框的风景" },
 ];
 
 export const letterContent = {
@@ -158,5 +168,13 @@ export const letterContent = {
     "1000 天只是我们的一小部分，我们还有无数个 1000 天。以后的故事，我还想和你一起写。",
   ],
   sign: "爱你的我",
-  date: "2026.11.18",
+  date: anniversaryDates.milestone,
+};
+
+export type AnniversaryContent = {
+  timelineEntries: TimelineEntry[];
+  futureEntries: FutureEntry[];
+  photoEntries: PhotoEntry[];
+  letterContent: typeof letterContent;
+  anniversaryDates: typeof anniversaryDates;
 };

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowUpRight, Gem, Heart, House, Plane, RotateCcw } from "lucide-react";
-import { futureEntries } from "./data";
+import type { FutureEntry } from "./data";
 import "./future.css";
 
 const wishIcons = {
@@ -12,7 +12,7 @@ const wishIcons = {
   someday: Heart,
 };
 
-export default function FutureSection({ reducedMotion }: { reducedMotion: boolean }) {
+export default function FutureSection({ reducedMotion, entries }: { reducedMotion: boolean; entries: FutureEntry[] }) {
   return (
     <section id="future" className="ann-future-section" aria-labelledby="ann-future-title">
       <div className="ann-future-inner">
@@ -28,7 +28,7 @@ export default function FutureSection({ reducedMotion }: { reducedMotion: boolea
         </header>
 
         <ol className="ann-future-wishes" aria-label="还没有发生的四个愿望">
-          {futureEntries.map((entry) => {
+          {entries.map((entry) => {
             const WishIcon = wishIcons[entry.id as keyof typeof wishIcons] ?? Heart;
 
             return (

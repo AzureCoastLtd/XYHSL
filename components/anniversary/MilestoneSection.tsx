@@ -2,13 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import { MilestoneAtmosphere } from "./Atmosphere";
-import { timelineEntries } from "./data";
+import type { AnniversaryContent } from "./data";
 import { LetterCard } from "./media";
 import "./milestone.css";
 
-const milestone = timelineEntries.find((entry) => entry.tone === "milestone");
 
-export default function MilestoneSection({ reducedMotion }: { reducedMotion: boolean }) {
+export default function MilestoneSection({ reducedMotion, content }: { reducedMotion: boolean; content: AnniversaryContent }) {
+  const milestone = content.timelineEntries.find((entry) => entry.tone === "milestone");
+  const dates = content.anniversaryDates;
   const numberRef = useRef<HTMLDivElement>(null);
   const [impression, setImpression] = useState("still");
 
@@ -51,7 +52,7 @@ export default function MilestoneSection({ reducedMotion }: { reducedMotion: boo
           </div>
           <header className="ann-milestone-dateline">
             <span>写给宝宝的第 1000 天</span>
-            <time dateTime="2026-11-18">2026.11.18</time>
+            <time dateTime={dates.milestone.replaceAll(".", "-")}>{dates.milestone}</time>
           </header>
 
           <div className="ann-milestone-number-wrap">
@@ -72,7 +73,7 @@ export default function MilestoneSection({ reducedMotion }: { reducedMotion: boo
           <div className="ann-milestone-intro">
             <span className="ann-milestone-label">{milestone?.label}</span>
             <h2 id="ann-milestone-title">每一天，<br />都算数。</h2>
-            <p>从 2024 年 2 月 23 日的第一天，<br />到 2026 年 11 月 18 日，是我们的第 1000 天。</p>
+            <p>从 {dates.startLabel}的第一天，<br />到 {dates.milestoneLabel}，是我们的第 1000 天。</p>
           </div>
         </div>
 
@@ -84,7 +85,7 @@ export default function MilestoneSection({ reducedMotion }: { reducedMotion: boo
             <span className="ann-milestone-letter-number">给宝宝 · 第 1000 天纪念</span>
           </div>
           <div className="ann-milestone-letter-artifact">
-            <LetterCard />
+            <LetterCard letterContent={content.letterContent} />
           </div>
         </div>
       </div>

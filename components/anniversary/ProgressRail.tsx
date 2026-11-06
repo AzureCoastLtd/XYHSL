@@ -1,15 +1,16 @@
 "use client";
 
+import { useMemo } from "react";
 import AmbientSound from "./AmbientSound";
-import { timelineEntries } from "./data";
+import type { TimelineEntry } from "./data";
 
-const progressEntries = [
-  { id: "opening", label: "启封" },
-  ...timelineEntries.map((entry) => ({ id: entry.id, label: entry.navLabel || entry.date })),
-  { id: "future", label: "未完待续" },
-];
 
-export default function ProgressRail({ activeId }: { activeId: string }) {
+export default function ProgressRail({ activeId, entries }: { activeId: string; entries: TimelineEntry[] }) {
+  const progressEntries = useMemo(() => [
+    { id: "opening", label: "启封" },
+    ...entries.map((entry) => ({ id: entry.id, label: entry.navLabel || entry.date })),
+    { id: "future", label: "未完待续" },
+  ], [entries]);
   const activeIndex = Math.max(0, progressEntries.findIndex((entry) => entry.id === activeId));
 
   return (

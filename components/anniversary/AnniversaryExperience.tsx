@@ -7,15 +7,15 @@ import MilestoneSection from "./MilestoneSection";
 import ProgressRail, { SiteHeader } from "./ProgressRail";
 import TimelineSection from "./TimelineSection";
 import { Starfield, useReducedMotion } from "./effects";
-import { timelineEntries } from "./data";
+import type { AnniversaryContent } from "./data";
 
-const sectionIds = ["opening", ...timelineEntries.map((entry) => entry.id), "future"];
 
-export default function AnniversaryExperience() {
+export default function AnniversaryExperience({ content }: { content: AnniversaryContent }) {
   const [activeId, setActiveId] = useState("opening");
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
+    const sectionIds = ["opening", ...content.timelineEntries.map((entry) => entry.id), "future"];
     const sections = sectionIds
       .map((id) => document.getElementById(id))
       .filter((section): section is HTMLElement => Boolean(section));
@@ -41,7 +41,7 @@ export default function AnniversaryExperience() {
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
     };
-  }, []);
+  }, [content.timelineEntries]);
 
   useEffect(() => {
     const onPlay = (event: Event) => {
@@ -66,12 +66,12 @@ export default function AnniversaryExperience() {
   return (
     <main className="anniversary-page">
       <Starfield />
-      <ProgressRail activeId={activeId} />
+      <ProgressRail activeId={activeId} entries={content.timelineEntries} />
       <SiteHeader />
-      <HeroSection reducedMotion={reducedMotion} onOpen={openLetter} />
-      <TimelineSection />
-      <MilestoneSection reducedMotion={reducedMotion} />
-      <FutureSection reducedMotion={reducedMotion} />
+      <HeroSection reducedMotion={reducedMotion} onOpen={openLetter} dates={content.anniversaryDates} />
+      <TimelineSection content={content} />
+      <MilestoneSection reducedMotion={reducedMotion} content={content} />
+      <FutureSection reducedMotion={reducedMotion} entries={content.futureEntries} />
     </main>
   );
 }

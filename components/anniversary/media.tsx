@@ -1,9 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Image, { getImageProps } from "next/image";
+import Image from "next/image";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import { type PhotoEntry, type TimelineMedia, letterContent, photoEntries } from "./data";
+import type { AnniversaryContent, PhotoEntry, TimelineMedia } from "./data";
 import { useVisualMode } from "./effects";
 import "./media.css";
 
@@ -12,7 +12,7 @@ const CircularGallery = dynamic(() => import("../reactbits/CircularGallery"), {
   loading: () => null,
 });
 
-export function PhotoDeck({ photos = photoEntries }: { photos?: PhotoEntry[] }) {
+export function PhotoDeck({ photos }: { photos: PhotoEntry[] }) {
   const frameRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLOListElement>(null);
   const trackId = useId();
@@ -28,7 +28,7 @@ export function PhotoDeck({ photos = photoEntries }: { photos?: PhotoEntry[] }) 
   }, [enhanced]);
   const items = useMemo(
     () => photos.map((photo) => ({
-      image: getImageProps({ src: photo.src, alt: photo.alt, width: 320, height: 568 }).props.src,
+      image: photo.previewSrc ?? photo.src,
       text: photo.caption,
       description: photo.alt,
       alt: photo.alt,
@@ -93,7 +93,8 @@ export function PhotoDeck({ photos = photoEntries }: { photos?: PhotoEntry[] }) 
                 >
                   <span className="ann-photo-mat">
                     <Image
-                      src={photo.src}
+                      src={photo.previewSrc ?? photo.src}
+                      unoptimized
                       alt={photo.alt}
                       fill
                       sizes="(max-width: 760px) 76vw, 260px"
@@ -164,7 +165,7 @@ export function PhotoDeck({ photos = photoEntries }: { photos?: PhotoEntry[] }) 
           {photos.map((photo, index) => (
             <li key={`${photo.src}-index-${index}`}>
               <a href={photo.src} target="_blank" rel="noreferrer" aria-label={`查看第 ${index + 1} 张完整照片：${photo.alt}（新窗口）`}>
-                <Image src={photo.src} alt={photo.alt} width={64} height={80} sizes="64px" />
+                <Image src={photo.previewSrc ?? photo.src} alt={photo.alt} width={64} height={80} sizes="64px" unoptimized />
                 <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
               </a>
             </li>
@@ -198,7 +199,7 @@ function DateCard({ date, caption }: { date: string; caption: string }) {
   );
 }
 
-export function TeaSticker({ label, caption, memory = "你给我买的那杯霸王茶姬，我一直记得。" }: { label: string; caption: string; memory?: string }) {
+export function TeaSticker({ label, caption, memory }: { label: string; caption: string; memory?: string }) {
   return (
     <details className="ann-tea-memory">
       <summary>
@@ -215,7 +216,7 @@ export function TeaSticker({ label, caption, memory = "你给我买的那杯霸�
             <circle cx="140" cy="172" r="37" stroke="#b98b7c" strokeWidth="0.7" />
             <path d="M107 159q-13 10-3 24m69-24q13 10 3 24M115 142l-5-7m55 7 5-7M115 204l-5 7m55-7 5 7" stroke="#a4756c" strokeWidth="1.5" strokeLinecap="round" />
             <text x="140" y="186" textAnchor="middle" fill="#78504e" fontFamily="Songti SC, STSong, serif" fontSize="39">茶</text>
-            <text x="140" y="247" textAnchor="middle" fill="#78504e" fontFamily="Songti SC, STSong, serif" fontSize="19" letterSpacing="3">霸王茶姬</text>
+            <text x="140" y="247" textAnchor="middle" fill="#78504e" fontFamily="Songti SC, STSong, serif" fontSize="19" letterSpacing="3">{label}</text>
             <path d="M114 264h52" stroke="#b59a80" />
             <path d="m101 280 78 0" stroke="#d4c2aa" strokeWidth="2" />
           </svg>
@@ -225,7 +226,7 @@ export function TeaSticker({ label, caption, memory = "你给我买的那杯霸�
       </summary>
       <div className="ann-tea-recalled">
         <span>我想对你说</span>
-        <p>{memory}</p>
+        <p>{memory ?? caption}</p>
       </div>
     </details>
   );
@@ -267,7 +268,7 @@ export function VideoCard({ title, note, src, poster }: Omit<VideoMedia, "type">
   );
 }
 
-export function LetterCard() {
+export function LetterCard({ letterContent }: { letterContent: AnniversaryContent["letterContent"] }) {
   return (
     <article className="ann-letter-card" aria-label="写给宝宝的一封信">
       <header className="ann-letter-heading"><span>第 1000 天 · 写给你</span><span aria-hidden="true">♡</span></header>
@@ -275,20 +276,20 @@ export function LetterCard() {
         <p className="ann-letter-greeting">{letterContent.greeting}</p>
         {letterContent.paragraphs.map((paragraph, index) => <p key={`letter-${index}`}>{paragraph}</p>)}
       </div>
-      <footer className="ann-letter-signature"><span>{letterContent.sign}</span><time dateTime="2026-11-18">{letterContent.date}</time></footer>
+      <footer className="ann-letter-signature"><span>{letterContent.sign}</span><time dateTime={letterContent.date.replaceAll(".", "-")}>{letterContent.date}</time></footer>
     </article>
   );
 }
 
-export function renderMedia(media: TimelineMedia, index: number) {
+export function renderMedia(media: TimelineMedia, index: number, content: Pick<AnniversaryContent, "photoEntries" | "letterContent">) {
   const key = `${media.id ?? media.type}-${index}`;
   switch (media.type) {
     case "date": return <DateCard key={key} date={media.date} caption={media.caption} />;
-    case "photos": return <PhotoDeck key={key} photos={media.items} />;
+    case "photos": return <PhotoDeck key={key} photos={media.items ?? content.photoEntries} />;
     case "sticker": return <TeaSticker key={key} label={media.label} caption={media.caption} memory={media.memory} />;
     case "audio": return <AudioCard key={key} {...media} />;
     case "video": return <VideoCard key={key} {...media} />;
-    case "letter": return <LetterCard key={key} />;
+    case "letter": return <LetterCard key={key} letterContent={content.letterContent} />;
     default: return null;
   }
 }

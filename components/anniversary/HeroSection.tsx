@@ -3,14 +3,17 @@
 import { useEffect, useRef, useState } from "react";
 import BlurText from "../reactbits/BlurText";
 import { LightAtmosphere } from "./Atmosphere";
+import type { AnniversaryContent } from "./data";
 import "./hero.css";
 
 export default function HeroSection({
   reducedMotion,
   onOpen,
+  dates,
 }: {
   reducedMotion: boolean;
   onOpen: () => void;
+  dates: AnniversaryContent["anniversaryDates"];
 }) {
   const [phase, setPhase] = useState<"closed" | "opening" | "open">("closed");
   const [canAnimateText, setCanAnimateText] = useState(false);
@@ -68,7 +71,7 @@ export default function HeroSection({
         <div className="ann-hero-copy">
           <p className="ann-hero-kicker">一封只写给你的信</p>
           <p className="ann-hero-date">
-            <time dateTime="2026-11-18">2026.11.18</time>
+            <time dateTime={dates.milestone.replaceAll(".", "-")}>{dates.milestone}</time>
             <span aria-hidden="true">·</span>
             <span>第 <strong>1000</strong> 天</span>
           </p>
@@ -160,7 +163,7 @@ export default function HeroSection({
       </div>
       <div className="ann-hero-bottom" aria-hidden="true">
         <span>我们的第一个 1000 天</span>
-        <span>2024.02.23 — 2026.11.18</span>
+        <span>{dates.start} — {dates.milestone}</span>
       </div>
     </section>
   );
