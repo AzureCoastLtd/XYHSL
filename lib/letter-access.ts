@@ -3,6 +3,20 @@ import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypt
 export const ACCESS_COOKIE = "letter_access";
 export const SESSION_SECONDS = 12 * 60 * 60;
 
+export function getPublicOrigin(request: Pick<Request, "url" | "headers">) {
+  const host = request.headers.get("host");
+  if (!host) return null;
+  try {
+    const protocol = new URL(request.url).protocol;
+    if (protocol !== "http:" && protocol !== "https:") return null;
+    const origin = new URL(`${protocol}//${host}`);
+    if (origin.username || origin.password || origin.pathname !== "/" || origin.search || origin.hash) return null;
+    return origin.origin;
+  } catch {
+    return null;
+  }
+}
+
 export function isAccessConfigured() {
   return /^\d{8}$/.test(process.env.LETTER_PASSWORD ?? "")
     && Buffer.byteLength(process.env.LETTER_SESSION_SECRET ?? "") >= 32;

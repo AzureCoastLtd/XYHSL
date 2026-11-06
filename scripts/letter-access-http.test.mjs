@@ -1,0 +1,44 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+
+// Run against `next start --hostname 0.0.0.0`, not a loopback-only listener.
+const base = new URL(process.env.LETTER_TEST_URL ?? "http://localhost:3124").origin;
+const password = process.env.LETTER_PASSWORD;
+
+test("a browser can unlock and stay on its own origin behind a wildcard listener", async () => {
+  assert.ok(/^\d{8}$/.test(password ?? ""), "Load the local server credentials with --env-file=.env.local");
+  const submit = (value, origin = base, returnTo = "/") => fetch(`${base}/api/unlock`, {
+    method: "POST",
+    headers: { origin },
+    body: new URLSearchParams({ password: value, returnTo }),
+    redirect: "manual",
+  });
+  const locked = await fetch(`${base}/`, { redirect: "manual" });
+  assert.equal(locked.status, 307);
+  assert.equal(locked.headers.get("location"), `${base}/unlock`);
+
+  const wrong = await submit(password === "00000000" ? "11111111" : "00000000");
+  assert.equal(wrong.status, 303, "same-origin wrong passwords return to the themed form, not a 403");
+  const wrongLocation = new URL(wrong.headers.get("location"));
+  assert.equal(wrongLocation.origin, base);
+  assert.equal(wrongLocation.pathname, "/unlock");
+  assert.equal(wrongLocation.searchParams.get("error"), "wrong");
+  assert.equal(wrong.headers.has("set-cookie"), false);
+
+  const unlocked = await submit(password);
+  assert.equal(unlocked.status, 303, "a correct same-origin form submission must not be rejected");
+  assert.equal(unlocked.headers.get("location"), `${base}/`);
+  const cookie = (unlocked.headers.get("set-cookie") ?? "").split(";")[0];
+  const letter = await fetch(`${base}/`, { headers: { cookie }, redirect: "manual" });
+  assert.equal(letter.status, 200);
+  const tree = await submit(password, base, "/christmas");
+  assert.equal(tree.headers.get("location"), `${base}/christmas`);
+  const externalReturn = await submit(password, base, "https://unrelated.example/");
+  assert.equal(externalReturn.headers.get("location"), `${base}/`);
+
+  const crossSite = await submit(password, "https://unrelated.example");
+  assert.equal(crossSite.status, 403, "using the browser Host must not disable cross-site protection");
+  assert.equal(crossSite.headers.has("set-cookie"), false);
+  const nullOrigin = await submit(password, "null");
+  assert.equal(nullOrigin.status, 403);
+});
