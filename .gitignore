@@ -28,6 +28,9 @@ yarn-error.log*
 # local env files
 .env*.local
 
+# private letter content and processed media; never publish with the source
+/.private/
+
 # vercel
 .vercel
 
