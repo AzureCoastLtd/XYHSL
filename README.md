@@ -60,6 +60,8 @@ pnpm dev
 
 Vercel 项目使用 Node.js 26.x，与 `package.json` 的 `engines.node` 保持一致。此前的远端失败发生在应用构建前：平台已停用项目原来选择的 Node.js 20.x；不要用本机构建成功代替远端日志和实际发布验证。
 
+`packageManager` 固定为本机已验证的 `pnpm@11.20.0`，Vercel 对应环境设置 `ENABLE_EXPERIMENTAL_COREPACK=1`。旧项目按创建日期默认选择 pnpm 9，它无法读取当前仅含构建策略的根配置，安装阶段报 `packages field missing or empty`；不要依赖平台对锁文件版本的猜测。
+
 正式发布从含真实 `.private/content.json` 和 `.private/media/` 的工作目录使用已有 Vercel CLI 上传，而不是只从公开 Git 仓库重建。`.vercelignore` 排除密钥、依赖和本机构建产物，但允许私有运行文件进入受控的部署源；`.gitignore` 仍禁止把它们提交 Git。`next.config.mjs` 仅为 `/1000` 和私有媒体 API 追踪所需文件，不把素材放到 `public/`。
 
 先关联现有 `xyhsl` 项目，在对应 production 环境安全设置 `LETTER_PASSWORD`、`LETTER_SESSION_SECRET`，再从该工作目录执行 `vercel deploy --prod`。不要把密钥放进命令参数、源码或记录；不要创建新的付费存储来替代已有发布方式。仅由 Git 触发的源码部署不包含私有文件，不能作为情书已上线的证据。
