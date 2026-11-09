@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ACCESS_COOKIE, createSession, getPublicOrigin, isAccessConfigured, isPasswordCorrect } from "../../../lib/letter-access";
+import { ACCESS_COOKIE, createSession, getPublicOrigin, getReturnPath, isAccessConfigured, isPasswordCorrect } from "../../../lib/letter-access";
 
 export async function POST(request: NextRequest) {
   const origin = getPublicOrigin(request);
@@ -13,12 +13,12 @@ export async function POST(request: NextRequest) {
   } catch {
     return new NextResponse(null, { status: 400 });
   }
-  const destination = form.get("returnTo") === "/christmas" ? "/christmas" : "/";
+  const destination = getReturnPath(form.get("returnTo"));
   const error = !isAccessConfigured() ? "unavailable" : !isPasswordCorrect(form.get("password")) ? "wrong" : null;
   const url = new URL(error ? "/unlock" : destination, origin);
   if (error) {
     url.searchParams.set("error", error);
-    if (destination !== "/") url.searchParams.set("next", destination);
+    url.searchParams.set("next", destination);
   }
   const response = NextResponse.redirect(url, 303);
   response.headers.set("Cache-Control", "private, no-store");

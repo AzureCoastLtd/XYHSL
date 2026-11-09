@@ -22,7 +22,7 @@ export default function ChristmasPage() {
       <GestureControls />
       <WishesInput />
       <MusicPlayer />
-      <Link href="/" className="christmas-back-link">
+      <Link href="/1000" className="christmas-back-link">
         ← 回到 1000 天
       </Link>
     </main>
