@@ -17,7 +17,7 @@ export type PhotoEntry = {
 export type TimelineMedia =
   | { type: "date"; id?: string; date: string; caption: string }
   | { type: "photos"; id?: string; items?: PhotoEntry[]; gallery?: boolean; title?: string; note?: string }
-  | { type: "sticker"; id?: string; label: string; caption: string; memory?: string }
+  | { type: "sticker"; id?: string; label: string; caption: string; memory?: string; image: PhotoEntry; audio?: { src: string; title: string } }
   | { type: "print"; id?: string; photo: PhotoEntry; title?: string; note?: string; expandable?: boolean }
   | { type: "letter"; id?: string };
 

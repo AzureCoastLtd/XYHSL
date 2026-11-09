@@ -43,7 +43,7 @@ test("a browser can unlock and stay on its own origin behind a wildcard listener
   assert.equal(nullOrigin.status, 403);
 });
 
-test("memory images require a session and never expose private source files", async () => {
+test("memory images and song clips require a session and never expose private source files", async () => {
   const login = await fetch(`${base}/api/unlock`, {
     method: "POST",
     headers: { origin: base },
@@ -52,7 +52,8 @@ test("memory images require a session and never expose private source files", as
   });
   const cookie = (login.headers.get("set-cookie") ?? "").split(";")[0];
   const page = await fetch(`${base}/`, { headers: { cookie } });
-  const imagePath = (await page.text()).match(/\/api\/memories\/[a-z0-9-]+\.webp/)?.[0];
+  const html = await page.text();
+  const imagePath = html.match(/\/api\/memories\/[a-z0-9-]+\.webp/)?.[0];
   assert.ok(imagePath, "The private story must contain a processed memory image");
   const locked = await fetch(`${base}${imagePath}`, { redirect: "manual" });
   assert.equal(locked.status, 401);
@@ -63,7 +64,15 @@ test("memory images require a session and never expose private source files", as
   const bytes = Buffer.from(await image.arrayBuffer());
   assert.equal(bytes.subarray(0, 4).toString(), "RIFF");
   assert.equal(bytes.subarray(8, 12).toString(), "WEBP");
-  for (const path of ["/api/memories/content.json", "/api/memories/not-a-real-image.webp", "/.private/content.json"]) {
+  const audioPath = html.match(/\/api\/memories\/[a-z0-9-]+\.mp3/)?.[0];
+  if (audioPath) {
+    assert.equal((await fetch(`${base}${audioPath}`)).status, 401);
+    const audio = await fetch(`${base}${audioPath}`, { headers: { cookie } });
+    assert.equal(audio.status, 200);
+    assert.equal(audio.headers.get("content-type"), "audio/mpeg");
+    assert.match(audio.headers.get("cache-control"), /private.*no-store/);
+  }
+  for (const path of ["/api/memories/content.json", "/api/memories/not-a-real-image.webp", "/api/memories/not-a-real-song.mp3", "/.private/content.json"]) {
     assert.equal((await fetch(`${base}${path}`, { headers: { cookie }, redirect: "manual" })).status, 404, path);
   }
 });

@@ -208,34 +208,54 @@ function DateCard({ date, caption }: { date: string; caption: string }) {
   );
 }
 
-export function TeaSticker({ label, caption, memory }: { label: string; caption: string; memory?: string }) {
+export function TeaSticker({ label, caption, memory, image, audio }: Extract<TimelineMedia, { type: "sticker" }>) {
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [playback, setPlayback] = useState<"idle" | "loading" | "playing" | "paused" | "ended" | "error">("idle");
+
+  useEffect(() => {
+    const player = audioRef.current;
+    return () => player?.pause();
+  }, []);
+
+  const play = (restart = false) => {
+    const player = audioRef.current;
+    if (!player) return;
+    if (player.error) player.load();
+    if (restart || player.ended) player.currentTime = 0;
+    setPlayback("loading");
+    void player.play().catch((error: unknown) => {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      if (audioRef.current === player) setPlayback("error");
+    });
+  };
+
+  const toggleCup = () => {
+    if (detailsRef.current?.open) audioRef.current?.pause();
+    else play(true);
+  };
+
+  const playing = playback === "playing" || playback === "loading";
   return (
-    <details className="ann-tea-memory">
-      <summary>
-        <span className="ann-tea-art" aria-hidden="true">
-          <svg viewBox="0 0 280 330" fill="none">
-            <path d="m179 80 19-55q2-7 8-5l3 1q5 2 3 8l-16 54" fill="#bd8b87" stroke="#fff9ef" strokeWidth="15" strokeLinejoin="round" />
-            <path d="M64 86h153l-19 206q-1 13-14 13H96q-13 0-14-13Z" fill="#eee0ca" stroke="#fff9ef" strokeWidth="20" strokeLinejoin="round" />
-            <path d="m76 104 16 183q1 8 9 8h81q8 0 9-8l17-183" stroke="#c8b59d" strokeWidth="2" />
-            <path d="M56 72q0-10 11-10h148q10 0 10 10v14H56Z" fill="#86685d" stroke="#fff9ef" strokeWidth="16" strokeLinejoin="round" />
-            <path d="M56 75h169v14H56Z" fill="#60483f" />
-            <path d="M67 66h147" stroke="#c5ad97" strokeWidth="3" strokeLinecap="round" />
-            <path d="M92 103h97M95 111h91" stroke="#d2bfa7" strokeWidth="1.5" />
-            <circle cx="140" cy="172" r="43" fill="#f6ead7" stroke="#a4756c" strokeWidth="1.3" />
-            <circle cx="140" cy="172" r="37" stroke="#b98b7c" strokeWidth="0.7" />
-            <path d="M107 159q-13 10-3 24m69-24q13 10 3 24M115 142l-5-7m55 7 5-7M115 204l-5 7m55-7 5 7" stroke="#a4756c" strokeWidth="1.5" strokeLinecap="round" />
-            <text x="140" y="186" textAnchor="middle" fill="#78504e" fontFamily="Songti SC, STSong, serif" fontSize="39">茶</text>
-            <text x="140" y="247" textAnchor="middle" fill="#78504e" fontFamily="Songti SC, STSong, serif" fontSize="19" letterSpacing="3">{label}</text>
-            <path d="M114 264h52" stroke="#b59a80" />
-            <path d="m101 280 78 0" stroke="#d4c2aa" strokeWidth="2" />
-          </svg>
+    <details ref={detailsRef} className="ann-tea-memory">
+      <summary onClick={audio ? toggleCup : undefined}>
+        <span className="ann-tea-art">
+          <Image src={image.src} alt={image.alt} width={image.width ?? 640} height={image.height ?? 880} sizes="244px" unoptimized />
+          <span className="ann-tea-brand-sticker" aria-hidden="true">CHAGEE<span>一杯 · 知音</span></span>
         </span>
-        <span className="ann-tea-paper-label"><strong>{label}</strong><span>{caption}</span></span>
-        <span className="ann-tea-invitation"><span className="ann-tea-closed-copy">轻轻点一下，打开这份回忆</span><span className="ann-tea-open-copy">这点甜，一直放在心上</span><span className="ann-tea-toggle" aria-hidden="true">＋</span></span>
+        <span className="ann-tea-paper-label"><small>霸王茶姬 · 原叶鲜奶茶</small><strong>{label}</strong><span>{caption}</span></span>
+        <span className="ann-tea-invitation"><span className="ann-tea-closed-copy">{audio ? `轻点杯子，听一段《${audio.title}》` : "轻轻点一下，打开这份回忆"}</span><span className="ann-tea-open-copy">这点甜，一直放在心上</span><span className="ann-tea-toggle" aria-hidden="true">＋</span></span>
       </summary>
       <div className="ann-tea-recalled">
         <span>我想对你说</span>
         <p>{memory ?? caption}</p>
+        {audio ? <>
+        <div className="ann-tea-song">
+          <div><strong>《{audio.title}》</strong><span aria-live="polite">{playback === "error" ? "暂时未能播放，请重试" : playback === "loading" ? "正在载入这一段…" : playback === "playing" ? "正在播放 · 为遇见你伏笔" : playback === "ended" ? "这一段，唱给你听" : "一段歌，留在这杯茶里"}</span></div>
+          <button type="button" onClick={() => playing ? audioRef.current?.pause() : play()} aria-label={`${playing ? "暂停" : playback === "ended" ? "重播" : "播放"}《${audio.title}》选段`}>{playing ? "暂停" : playback === "ended" ? "再听一遍" : playback === "error" ? "重试播放" : "播放这一段"}</button>
+        </div>
+        <audio ref={audioRef} src={audio.src} preload="none" data-resume-ambient onPlaying={() => setPlayback("playing")} onWaiting={() => setPlayback("loading")} onPause={() => setPlayback(audioRef.current?.ended ? "ended" : "paused")} onEnded={() => setPlayback("ended")} onError={() => setPlayback("error")} />
+        </> : null}
       </div>
     </details>
   );
@@ -276,7 +296,7 @@ export function renderMedia(media: TimelineMedia, index: number, content: Pick<A
   switch (media.type) {
     case "date": return <DateCard key={key} date={media.date} caption={media.caption} />;
     case "photos": return <PhotoDeck key={key} photos={media.items ?? content.photoEntries} gallery={media.gallery} title={media.title} note={media.note} />;
-    case "sticker": return <TeaSticker key={key} label={media.label} caption={media.caption} memory={media.memory} />;
+    case "sticker": return <TeaSticker key={key} {...media} />;
     case "print": return <MemoryPrint key={key} {...media} />;
     case "letter": return <LetterCard key={key} letterContent={content.letterContent} />;
     default: return null;

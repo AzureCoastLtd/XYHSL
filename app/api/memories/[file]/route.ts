@@ -12,12 +12,13 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
     return new Response(null, { status: 401, headers: privateHeaders });
   }
   const { file } = await params;
-  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*\.webp$/.test(file)) {
+  const extension = /^[a-z0-9]+(?:-[a-z0-9]+)*\.(webp|mp3)$/.exec(file)?.[1];
+  if (!extension) {
     return new Response(null, { status: 404, headers: privateHeaders });
   }
   try {
     const bytes = await readFile(join(process.cwd(), ".private", "media", file));
-    return new Response(new Uint8Array(bytes), { headers: { ...privateHeaders, "Content-Type": "image/webp" } });
+    return new Response(new Uint8Array(bytes), { headers: { ...privateHeaders, "Content-Type": extension === "mp3" ? "audio/mpeg" : "image/webp" } });
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") {
       return new Response(null, { status: 404, headers: privateHeaders });
