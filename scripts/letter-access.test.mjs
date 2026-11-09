@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createSession, getPublicOrigin, isAccessConfigured, isPasswordCorrect, isSessionValid, SESSION_SECONDS } from "../lib/letter-access.ts";
+import { createSession, getPublicOrigin, getReturnPath, isAccessConfigured, isPasswordCorrect, isSessionValid, SESSION_SECONDS } from "../lib/letter-access.ts";
 
 test("a letter session requires the password and rejects tampering, expiry, and rotated credentials", () => {
   const originalPassword = process.env.LETTER_PASSWORD;
@@ -54,5 +54,13 @@ test("browser hosts and ports define the public origin, independently of the lis
   assert.equal(getPublicOrigin(new Request("http://internal:3000/api/unlock")), null);
   for (const host of ["unrelated.example/elsewhere", "user@unrelated.example", "unrelated.example?query=1"]) {
     assert.equal(getPublicOrigin(new Request("http://internal:3000/api/unlock", { headers: { host } })), null);
+  }
+});
+
+test("login returns only to an allowlisted private destination, defaulting to the letter", () => {
+  assert.equal(getReturnPath("/1000"), "/1000");
+  assert.equal(getReturnPath("/christmas"), "/christmas");
+  for (const value of [undefined, null, "", "/", "/unlock", "https://unrelated.example/1000", "//unrelated.example", "/1000?next=/christmas", "/1000#opening", ["/christmas"], new Blob(["/christmas"])]) {
+    assert.equal(getReturnPath(value), "/1000");
   }
 });

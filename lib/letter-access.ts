@@ -3,6 +3,10 @@ import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypt
 export const ACCESS_COOKIE = "letter_access";
 export const SESSION_SECONDS = 12 * 60 * 60;
 
+export function getReturnPath(value: unknown): "/1000" | "/christmas" {
+  return value === "/christmas" ? "/christmas" : "/1000";
+}
+
 export function getPublicOrigin(request: Pick<Request, "url" | "headers">) {
   const host = request.headers.get("host");
   if (!host) return null;

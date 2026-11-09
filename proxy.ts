@@ -3,16 +3,16 @@ import { ACCESS_COOKIE, getPublicOrigin, isSessionValid } from "./lib/letter-acc
 
 export function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  const isPublic = path === "/unlock" || path === "/api/unlock";
+  const isPublic = path === "/" || path === "/unlock" || path === "/api/unlock";
   let response: NextResponse;
 
   if (isPublic || isSessionValid(request.cookies.get(ACCESS_COOKIE)?.value)) {
     response = NextResponse.next();
-  } else if (request.method === "GET" && (path === "/" || path === "/christmas")) {
+  } else if (request.method === "GET" && (path === "/1000" || path === "/christmas")) {
     const origin = getPublicOrigin(request);
     if (origin) {
       const destination = new URL("/unlock", origin);
-      if (path === "/christmas") destination.searchParams.set("next", path);
+      destination.searchParams.set("next", path);
       response = NextResponse.redirect(destination);
     } else {
       response = new NextResponse(null, { status: 400 });

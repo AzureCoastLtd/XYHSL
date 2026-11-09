@@ -4,9 +4,9 @@ import { useState } from "react";
 import { ArrowRight, Eye, EyeOff, LockKeyhole } from "lucide-react";
 import "./password-gate.css";
 
-export default function PasswordGate({ error, returnTo }: {
+export default function PasswordGate({ error, returnTo = "/1000" }: {
   error?: "wrong" | "unavailable";
-  returnTo: "/" | "/christmas";
+  returnTo?: "/1000" | "/christmas";
 }) {
   const [visible, setVisible] = useState(false);
   const [pending, setPending] = useState(false);
