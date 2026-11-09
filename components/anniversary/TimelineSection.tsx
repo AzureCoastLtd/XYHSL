@@ -53,7 +53,7 @@ function TimelineEntryCard({ entry, index, content }: { entry: TimelineEntry; in
 export default function TimelineSection({ content }: { content: AnniversaryContent }) {
   return (
     <section className="ann-timeline" aria-label="那些关于我们的事">
-      <div className="ann-timeline-heading"><span>把小事，写成我们的故事</span><span aria-hidden="true">MEMORIES, KEPT CLOSE</span></div>
+      <div className="ann-timeline-heading">把小事，写成我们的故事</div>
       {content.timelineEntries.filter((entry) => entry.tone !== "milestone").map((entry, index) => (
         <TimelineEntryCard key={entry.id} entry={entry} index={index} content={content} />
       ))}

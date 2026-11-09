@@ -6,13 +6,15 @@
 
 .ann-album-heading {
   display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 12px;
+  gap: 4px 16px;
+  margin-bottom: 16px;
   color: var(--ann-muted);
   font-family: var(--ann-sans);
-  font-size: 12px;
-  line-height: 20px;
+  font-size: 14px;
+  line-height: 24px;
 }
 
 .ann-album-heading > :last-child {
@@ -22,7 +24,7 @@
 
 .ann-photo-stage {
   position: relative;
-  height: 470px;
+  min-height: 470px;
   isolation: isolate;
 }
 
@@ -32,7 +34,7 @@
   align-items: flex-start;
   gap: 16px;
   width: 100%;
-  height: 100%;
+  height: auto;
   margin: 0;
   padding: 24px 24px 28px;
   overflow-x: auto;
@@ -109,13 +111,14 @@
 
 .ann-photo-print figcaption {
   display: flex;
-  min-height: 56px;
+  min-height: 64px;
   align-items: center;
   gap: 12px;
+  padding-block: 12px;
   color: var(--ann-paper-ink);
   font-family: var(--ann-script);
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 16px;
+  line-height: 26px;
 }
 
 .ann-photo-number {
@@ -146,8 +149,8 @@
 .ann-photo-webgl .circular-gallery-caption-text {
   color: var(--ann-ink);
   font-family: var(--ann-serif);
-  font-size: 14px;
-  line-height: 24px;
+  font-size: 16px;
+  line-height: 28px;
   opacity: 1;
 }
 
@@ -165,6 +168,7 @@
 
 .ann-album-footer {
   display: flex;
+  flex-wrap: wrap;
   min-height: 48px;
   align-items: center;
   gap: 12px;
@@ -172,12 +176,12 @@
 }
 
 .ann-album-footer p {
-  flex: 1;
+  flex: 1 1 220px;
   margin: 0;
   color: var(--ann-muted);
   font-family: var(--ann-sans);
-  font-size: 12px;
-  line-height: 20px;
+  font-size: 14px;
+  line-height: 24px;
 }
 
 .ann-album-count {
@@ -196,6 +200,7 @@
 .ann-album-navigation {
   display: flex;
   gap: 4px;
+  margin-left: auto;
 }
 
 .ann-album-navigation button {
@@ -214,10 +219,6 @@
   transition: border-color 180ms var(--ann-ease-out), background 180ms var(--ann-ease-out);
 }
 
-.ann-album-navigation button:hover:not(:disabled) {
-  border-color: var(--ann-gold);
-  background: rgba(231, 195, 155, 0.08);
-}
 
 .ann-album-navigation button:disabled {
   color: var(--ann-soft);
@@ -226,7 +227,7 @@
 
 .ann-photo-index {
   display: grid;
-  grid-template-columns: 100px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
   gap: 12px;
   margin-top: 12px;
@@ -234,12 +235,6 @@
   border-top: 1px solid var(--ann-line);
 }
 
-.ann-photo-index-label {
-  color: var(--ann-muted);
-  font-family: var(--ann-script);
-  font-size: 13px;
-  line-height: 24px;
-}
 
 .ann-photo-index ol {
   display: flex;
@@ -295,8 +290,8 @@
   margin: 0 0 12px;
   color: var(--ann-muted);
   font-family: var(--ann-serif);
-  font-size: 14px;
-  line-height: 24px;
+  font-size: 16px;
+  line-height: 28px;
 }
 
 .ann-memory-print {
@@ -347,15 +342,15 @@
   padding: 4px 4px 14px;
   color: var(--ann-paper-muted);
   font-family: var(--ann-script);
-  font-size: 17px;
+  font-size: 18px;
   line-height: 28px;
 }
 
 .ann-memory-print figcaption {
   padding: 16px 8px;
   font-family: var(--ann-script);
-  font-size: 15px;
-  line-height: 26px;
+  font-size: 16px;
+  line-height: 28px;
   text-wrap: pretty;
 }
 
@@ -364,8 +359,8 @@
   padding: 0 8px 16px;
   color: var(--ann-paper-muted);
   font-family: var(--ann-serif);
-  font-size: 13px;
-  line-height: 23px;
+  font-size: 15px;
+  line-height: 26px;
 }
 
 .ann-print-fold > summary {
@@ -375,11 +370,11 @@
   justify-content: space-between;
   gap: 16px;
   padding: 12px;
-  border-block: 1px solid var(--ann-line-strong);
+  border-block: 1px solid rgb(106 82 88 / 24%);
   cursor: pointer;
   list-style: none;
   font-family: var(--ann-serif);
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .ann-print-fold > summary::-webkit-details-marker {
@@ -448,11 +443,11 @@
   display: flex;
   justify-content: center;
   align-items: baseline;
-  gap: 8px;
+  gap: 6px;
   margin: 24px 0 16px;
   color: var(--ann-paper-ink);
   font-family: var(--ann-display);
-  font-size: clamp(88px, 9vw, 120px);
+  font-size: clamp(64px, 6.5vw, 88px);
   font-variant-numeric: lining-nums tabular-nums;
   line-height: 1;
 }
@@ -478,17 +473,6 @@
   text-align: left;
 }
 
-.ann-date-keepsake-bottom {
-  display: block;
-  margin-top: 28px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(106, 82, 88, 0.24);
-  color: var(--ann-paper-muted);
-  font-family: var(--ann-sans);
-  font-size: 11px;
-  line-height: 20px;
-  letter-spacing: 0.12em;
-}
 
 .ann-tea-memory {
   position: relative;
@@ -555,21 +539,14 @@
   letter-spacing: 0.1em;
 }
 
-.ann-tea-paper-label small {
-  display: block;
-  margin-bottom: 5px;
-  color: var(--ann-paper-muted);
-  font-family: var(--ann-sans);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-}
 
 .ann-tea-paper-label {
   position: relative;
   display: block;
-  max-width: calc(100% - 24px);
-  margin: -20px 0 0 64px;
-  padding: 16px 22px;
+  width: min(300px, calc(100% - 32px));
+  max-width: 100%;
+  margin: -20px 0 0 24px;
+  padding: 16px 20px;
   border: 1px solid #fff7ec;
   background: var(--ann-paper);
   color: var(--ann-paper-ink);
@@ -590,8 +567,8 @@
   display: block;
   color: var(--ann-paper-muted);
   font-family: var(--ann-script);
-  font-size: 15px;
-  line-height: 24px;
+  font-size: 16px;
+  line-height: 26px;
 }
 
 .ann-tea-invitation {
@@ -603,8 +580,8 @@
   margin-top: 24px;
   color: var(--ann-muted);
   font-family: var(--ann-sans);
-  font-size: 12px;
-  line-height: 20px;
+  font-size: 14px;
+  line-height: 24px;
 }
 
 .ann-tea-toggle {
@@ -635,7 +612,7 @@
 
 .ann-tea-recalled {
   margin: 20px 12px 0;
-  padding: 20px 24px;
+  padding: 24px 20px;
   background: var(--ann-paper);
   color: var(--ann-paper-ink);
   box-shadow: var(--ann-shadow-paper);
@@ -658,7 +635,7 @@
 .ann-tea-song strong {
   display: block;
   font-family: var(--ann-serif);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
 }
 
@@ -666,8 +643,8 @@
   display: block;
   margin-top: 5px;
   color: var(--ann-paper-muted);
-  font-size: 11px;
-  line-height: 18px;
+  font-size: 14px;
+  line-height: 24px;
 }
 
 .ann-tea-song button {
@@ -678,8 +655,9 @@
   background: transparent;
   color: var(--ann-paper-ink);
   font: inherit;
-  font-size: 12px;
+  font-size: 14px;
   cursor: pointer;
+  transition: border-color 180ms, background 180ms;
 }
 
 .ann-tea-song button:focus-visible {
@@ -725,17 +703,17 @@
 .ann-tea-recalled > span {
   color: var(--ann-paper-muted);
   font-family: var(--ann-sans);
-  font-size: 11px;
-  line-height: 20px;
-  letter-spacing: 0.06em;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: .02em;
 }
 
 .ann-tea-recalled p {
   margin: 8px 0 0;
   color: var(--ann-paper-ink);
   font-family: var(--ann-serif);
-  font-size: 17px;
-  line-height: 30px;
+  font-size: 18px;
+  line-height: 1.85;
   text-wrap: pretty;
 }
 
@@ -744,7 +722,7 @@
   position: relative;
   width: 100%;
   margin: 0;
-  padding: 32px 36px 36px;
+  padding: 36px;
   border: 1px solid #fff7ec;
   background-color: var(--ann-paper);
   background-image: repeating-linear-gradient(95deg, transparent 0 3px, rgba(106, 82, 88, 0.018) 3px 4px);
@@ -770,9 +748,9 @@
   border-bottom: 1px solid rgba(106, 82, 88, 0.24);
   color: var(--ann-paper-muted);
   font-family: var(--ann-sans);
-  font-size: 11px;
-  line-height: 20px;
-  letter-spacing: 0.06em;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: .02em;
 }
 
 .ann-letter-heading > :last-child {
@@ -783,21 +761,21 @@
 }
 
 .ann-letter-body {
-  background-image: repeating-linear-gradient(to bottom, transparent 0 31px, rgba(106, 82, 88, 0.15) 31px 32px);
-  background-size: 100% 32px;
+  background-image: repeating-linear-gradient(to bottom, transparent 0 35px, rgba(106, 82, 88, 0.11) 35px 36px);
+  background-size: 100% 36px;
   color: var(--ann-paper-ink);
   font-family: var(--ann-serif);
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 400;
-  line-height: 32px;
+  line-height: 36px;
   letter-spacing: 0;
 }
 
 .ann-letter-body p {
-  margin: 0 0 32px;
+  margin: 0 0 36px;
   color: var(--ann-paper-ink);
   font: inherit;
-  line-height: 32px;
+  line-height: 36px;
   line-break: strict;
   text-align: left;
   text-wrap: pretty;
@@ -806,8 +784,8 @@
 .ann-letter-body .ann-letter-greeting {
   margin-bottom: 0;
   font-family: var(--ann-script);
-  font-size: 21px;
-  line-height: 32px;
+  font-size: 22px;
+  line-height: 36px;
 }
 
 .ann-letter-body p:last-child {
@@ -850,6 +828,16 @@
 }
 
 @media (hover: hover) {
+  .ann-album-navigation button:hover:not(:disabled) {
+    border-color: var(--ann-gold);
+    background: rgba(231, 195, 155, 0.08);
+  }
+
+  .ann-tea-song button:hover {
+    border-color: var(--ann-paper-ink);
+    background: rgb(63 47 54 / 5%);
+  }
+
   .ann-photo-print:hover,
   .ann-photo-print:focus-within,
   .ann-photo-page:nth-child(even) .ann-photo-print:hover,
@@ -868,9 +856,6 @@
     gap: 4px;
   }
 
-  .ann-photo-index-label {
-    font-size: 12px;
-  }
 
   .ann-date-keepsake {
     width: 94%;
@@ -878,13 +863,13 @@
   }
 
   .ann-date-keepsake time {
-    font-size: 88px;
+    font-size: 80px;
   }
 }
 
 @media (max-width: 760px) {
   .ann-photo-stage {
-    height: auto;
+    min-height: 0;
   }
 
   .ann-photo-track {
@@ -917,7 +902,7 @@
   }
 
   .ann-album-footer p {
-    font-size: 12px;
+    flex-basis: 100%;
   }
 
   .ann-album-count {
@@ -931,7 +916,7 @@
   }
 
   .ann-date-keepsake time {
-    font-size: clamp(80px, 25vw, 104px);
+    font-size: clamp(64px, 20vw, 104px);
   }
 
   .ann-tea-art {
@@ -939,17 +924,17 @@
   }
 
   .ann-tea-paper-label {
-    margin-left: 32px;
+    margin-left: 16px;
   }
 
 
   .ann-letter-card {
-    padding: 28px 24px 32px;
+    padding: 28px 20px 32px;
   }
 
   .ann-letter-body {
-    font-size: 16px;
-    line-height: 32px;
+    font-size: 18px;
+    line-height: 36px;
   }
 }
 
@@ -975,7 +960,8 @@
     transition: none;
   }
 
-  .ann-album-navigation button {
+  .ann-album-navigation button,
+  .ann-tea-song button {
     transition: none;
   }
 }

@@ -83,7 +83,6 @@ export default function MilestoneSection({ reducedMotion, content }: { reducedMo
             <span className="ann-milestone-letter-rule" aria-hidden="true" />
             <p className="ann-milestone-letter-caption">把一千天，折进一封信。</p>
             <p>有些话，想慢一点说。<br />有些心意，想让你一直留着。</p>
-            <span className="ann-milestone-letter-number">给宝宝 · 第 1000 天纪念</span>
           </div>
           <div className="ann-milestone-letter-artifact">
             <LetterCard letterContent={content.letterContent} />

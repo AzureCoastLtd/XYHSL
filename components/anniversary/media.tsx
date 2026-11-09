@@ -169,7 +169,6 @@ export function PhotoDeck({ photos, gallery = false, title, note }: { photos: Ph
         ) : null}
       </div>
       <nav className="ann-photo-index" aria-label="逐张放大查看照片">
-        <span className="ann-photo-index-label">每一张，都想珍藏</span>
         <ol>
           {photos.map((photo, index) => (
             <li key={`${photo.src}-index-${index}`}>
@@ -203,7 +202,6 @@ function DateCard({ date, caption }: { date: string; caption: string }) {
         )}
       </time>
       <figcaption>{caption}</figcaption>
-      <span className="ann-date-keepsake-bottom" aria-hidden="true">THE FIRST PAGE OF US</span>
     </figure>
   );
 }
@@ -243,7 +241,7 @@ export function TeaSticker({ label, caption, memory, image, audio }: Extract<Tim
           <Image src={image.src} alt={image.alt} width={image.width ?? 640} height={image.height ?? 880} sizes="244px" unoptimized />
           <span className="ann-tea-brand-sticker" aria-hidden="true">CHAGEE<span>一杯 · 知音</span></span>
         </span>
-        <span className="ann-tea-paper-label"><small>霸王茶姬 · 原叶鲜奶茶</small><strong>{label}</strong><span>{caption}</span></span>
+        <span className="ann-tea-paper-label"><strong>{label}</strong><span>{caption}</span></span>
         <span className="ann-tea-invitation"><span className="ann-tea-closed-copy">{audio ? `轻点杯子，听一段《${audio.title}》` : "轻轻点一下，打开这份回忆"}</span><span className="ann-tea-open-copy">这点甜，一直放在心上</span><span className="ann-tea-toggle" aria-hidden="true">＋</span></span>
       </summary>
       <div className="ann-tea-recalled">

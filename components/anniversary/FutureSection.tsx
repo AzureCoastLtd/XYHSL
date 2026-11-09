@@ -18,7 +18,7 @@ export default function FutureSection({ reducedMotion, entries }: { reducedMotio
       <div className="ann-future-inner">
         <header className="ann-future-heading">
           <div>
-            <p className="ann-future-label">留给以后的信 <span>LETTERS TO OUR FUTURE</span></p>
+            <p className="ann-future-label">留给以后的信</p>
             <h2 id="ann-future-title">下一页，<br />留给我们。</h2>
           </div>
           <div className="ann-future-preface">
@@ -36,7 +36,7 @@ export default function FutureSection({ reducedMotion, entries }: { reducedMotio
                 <article className="ann-wish-envelope" aria-labelledby={`wish-${entry.id}`}>
                   <div className="ann-wish-letter">
                     <div className="ann-wish-letter-top">
-                      <span className="ann-wish-index">{entry.index} <span>/ 尚未发生</span></span>
+                      <span className="ann-wish-index" aria-hidden="true">{entry.index}</span>
                       <span className="ann-wish-illustration" aria-hidden="true">
                         <WishIcon size={42} strokeWidth={1.1} />
                       </span>
@@ -44,9 +44,7 @@ export default function FutureSection({ reducedMotion, entries }: { reducedMotio
                     <h3 id={`wish-${entry.id}`}>{entry.title}</h3>
                     <p>{entry.description}</p>
                   </div>
-                  <div className="ann-wish-pocket" aria-hidden="true">
-                    <span>写给未来的我们</span>
-                  </div>
+                  <div className="ann-wish-pocket" aria-hidden="true" />
                 </article>
               </li>
             );

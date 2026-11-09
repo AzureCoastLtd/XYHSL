@@ -69,7 +69,6 @@ export default function HeroSection({
       </div>
       <div className="ann-hero-inner">
         <div className="ann-hero-copy">
-          <p className="ann-hero-kicker">一封只写给你的信</p>
           <p className="ann-hero-date">
             <time dateTime={dates.milestone.replaceAll(".", "-")}>{dates.milestone}</time>
             <span aria-hidden="true">·</span>

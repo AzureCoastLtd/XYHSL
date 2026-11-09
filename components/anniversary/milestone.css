@@ -1,13 +1,13 @@
 .ann-milestone-section {
   position: relative;
-  padding: 80px 24px 112px;
+  padding: 80px 0 72px;
   color: var(--ann-ink);
   font-family: var(--ann-serif);
   scroll-margin-top: 64px;
 }
 
 .ann-milestone-inner {
-  width: min(1120px, 100%);
+  width: var(--ann-page-width);
   margin-inline: auto;
 }
 
@@ -17,7 +17,7 @@
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
   align-items: center;
   gap: 48px 64px;
-  padding-bottom: 80px;
+  padding-bottom: 64px;
   isolation: isolate;
 }
 
@@ -43,7 +43,7 @@
 .ann-milestone-dateline > span {
   color: var(--ann-muted);
   font-family: var(--ann-sans);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 24px;
 }
 
@@ -138,8 +138,8 @@
   margin: 8px 0 0;
   padding-left: 4px;
   color: var(--ann-muted);
-  font-size: 16px;
-  line-height: 28px;
+  font-size: 18px;
+  line-height: 32px;
 }
 
 .ann-milestone-intro {
@@ -152,9 +152,9 @@
   margin-bottom: 20px;
   color: var(--ann-gold);
   font-family: var(--ann-sans);
-  font-size: 11px;
-  line-height: 20px;
-  letter-spacing: .15em;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: .04em;
 }
 
 .ann-milestone-intro h2 {
@@ -168,10 +168,11 @@
 }
 
 .ann-milestone-intro > p {
+  max-width: 26em;
   margin: 24px 0 0;
   color: var(--ann-muted);
-  font-size: 17px;
-  line-height: 30px;
+  font-size: 19px;
+  line-height: 1.85;
   text-wrap: pretty;
   line-break: strict;
 }
@@ -180,11 +181,12 @@
   display: grid;
   grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr);
   align-items: start;
-  gap: 80px;
+  gap: 64px;
 }
 
 .ann-milestone-letter-aside {
-  padding: 40px 0 0 4px;
+  max-width: 320px;
+  padding: 32px 0 0 4px;
 }
 
 .ann-milestone-letter-rule {
@@ -206,18 +208,10 @@
 .ann-milestone-letter-aside > p:not(.ann-milestone-letter-caption) {
   margin: 24px 0 0;
   color: var(--ann-muted);
-  font-size: 16px;
-  line-height: 28px;
+  font-size: 18px;
+  line-height: 32px;
 }
 
-.ann-milestone-letter-number {
-  display: block;
-  margin-top: 40px;
-  color: var(--ann-soft);
-  font-family: var(--ann-sans);
-  font-size: 12px;
-  line-height: 20px;
-}
 
 .ann-milestone-letter-artifact {
   min-width: 0;
@@ -291,8 +285,8 @@
   }
 
   .ann-milestone-intro > p {
-    font-size: 16px;
-    line-height: 28px;
+    font-size: 18px;
+    line-height: 1.85;
   }
 
   .ann-milestone-intro > p br {
@@ -310,7 +304,7 @@
 
 @media (max-width: 700px) {
   .ann-milestone-section {
-    padding: 56px 24px 64px;
+    padding: 56px 0;
   }
 
   .ann-milestone-scene {
@@ -324,13 +318,14 @@
   }
 
   .ann-milestone-dateline {
-    gap: 16px;
+    flex-wrap: wrap;
+    gap: 12px 20px;
     padding-bottom: 20px;
   }
 
   .ann-milestone-dateline > span {
-    font-size: 12px;
-    line-height: 20px;
+    font-size: 14px;
+    line-height: 24px;
   }
 
   .ann-milestone-dateline time {
@@ -348,7 +343,7 @@
   .ann-milestone-count-caption {
     margin-top: 0;
     padding-left: 0;
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .ann-milestone-intro {
@@ -360,7 +355,7 @@
   }
 
   .ann-milestone-intro h2 {
-    font-size: 36px;
+    font-size: clamp(32px, 8.9vw, 38px);
     line-height: 1.35;
   }
 
@@ -390,9 +385,6 @@
     margin-top: 12px;
   }
 
-  .ann-milestone-letter-number {
-    margin-top: 20px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

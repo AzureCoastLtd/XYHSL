@@ -1,9 +1,9 @@
 .ann-timeline {
   position: relative;
   z-index: 1;
-  width: min(1120px, calc(100% - 64px));
+  width: var(--ann-page-width);
   margin: 0 auto;
-  padding: 48px 0 64px;
+  padding: 40px 0 24px;
 }
 
 .ann-timeline-heading {
@@ -15,30 +15,26 @@
   border-bottom: 1px solid var(--ann-line);
   color: var(--ann-muted);
   font-family: var(--ann-sans);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 24px;
 }
 
-.ann-timeline-heading > :last-child {
-  color: var(--ann-soft);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-}
 
 .ann-entry {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
   align-items: center;
-  gap: clamp(40px, 6vw, 88px);
+  gap: clamp(40px, 5vw, 72px);
   min-height: 0;
-  padding: 80px 0;
+  padding: 88px 0;
   border-bottom: 1px solid var(--ann-line);
   scroll-margin-top: 64px;
 }
 
 .ann-entry:last-child {
   border-bottom: 0;
+  padding-bottom: 48px;
 }
 
 .ann-entry-content {
@@ -83,10 +79,10 @@
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 8px 12px;
+  gap: 8px 14px;
   color: var(--ann-muted);
   font-family: var(--ann-sans);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 24px;
 }
 
@@ -94,7 +90,7 @@
   padding-right: 4px;
   color: var(--ann-gold);
   font-family: var(--ann-display);
-  font-size: 24px;
+  font-size: 28px;
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
@@ -108,7 +104,7 @@
   padding-top: 0;
   color: var(--ann-muted);
   font-family: var(--ann-sans);
-  font-size: 12px;
+  font-size: 14px;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
   text-align: left;
@@ -116,10 +112,10 @@
 
 .ann-entry-content h2 {
   max-width: 11em;
-  margin: 24px 0;
+  margin: 28px 0 24px;
   color: var(--ann-ink);
   font-family: var(--ann-serif);
-  font-size: clamp(40px, 3.7vw, 50px);
+  font-size: clamp(40px, 3.9vw, 52px);
   font-weight: 400;
   line-height: 1.28;
   letter-spacing: -0.01em;
@@ -132,13 +128,13 @@
 }
 
 .ann-entry-description {
-  max-width: 28em;
+  max-width: 26em;
   margin: 0;
   color: var(--ann-muted);
   font-family: var(--ann-serif);
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 400;
-  line-height: 30px;
+  line-height: 1.85;
   letter-spacing: 0;
   line-break: strict;
   text-wrap: pretty;
@@ -162,23 +158,23 @@
   grid-column: 1 / -1;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
-  gap: 40px clamp(32px, 5vw, 72px);
+  gap: 48px clamp(32px, 5vw, 72px);
   min-width: 0;
-  margin: 8px 0 0;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .ann-moment {
   min-width: 0;
-  padding-top: 24px;
+  padding-top: 28px;
   border-top: 1px solid var(--ann-line);
 }
 
 .ann-moment-date {
   color: var(--ann-rose);
   font-family: var(--ann-sans);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 24px;
   font-variant-numeric: tabular-nums;
 }
@@ -189,7 +185,7 @@
   font-family: var(--ann-serif);
   font-size: clamp(21px, 2.2vw, 27px);
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.5;
   text-wrap: balance;
 }
 
@@ -197,8 +193,8 @@
   margin: 0;
   color: var(--ann-muted);
   font-family: var(--ann-serif);
-  font-size: 16px;
-  line-height: 29px;
+  font-size: 18px;
+  line-height: 1.85;
   text-wrap: pretty;
 }
 
@@ -223,7 +219,7 @@
 }
 
 .ann-moment-artifacts .ann-photo-stage {
-  height: 362px;
+  min-height: 362px;
 }
 
 .ann-moment-artifacts .ann-photo-page {
@@ -268,18 +264,14 @@
 
 @media (max-width: 760px) {
   .ann-timeline {
-    width: calc(100% - 40px);
-    padding: 24px 0 40px;
+    padding: 24px 0 16px;
   }
 
   .ann-timeline-heading {
     padding-bottom: 20px;
-    font-size: 12px;
+    font-size: 14px;
   }
 
-  .ann-timeline-heading > :last-child {
-    display: none;
-  }
 
   .ann-moments {
     grid-template-columns: minmax(0, 1fr);
@@ -292,7 +284,7 @@
   }
 
   .ann-moment-artifacts .ann-photo-stage {
-    height: auto;
+    min-height: 0;
   }
 
   .ann-entry,
@@ -300,7 +292,7 @@
   .ann-entry[data-media="photos"],
   .ann-entry[data-media="photos"]:nth-of-type(even) {
     grid-template-columns: minmax(0, 1fr);
-    gap: 36px;
+    gap: 32px;
     padding: 64px 0;
     scroll-margin-top: 48px;
   }
@@ -316,14 +308,14 @@
 
   .ann-entry-content h2 {
     margin: 20px 0;
-    font-size: clamp(30px, 8.9vw, 38px);
+    font-size: clamp(32px, 8.9vw, 38px);
     line-height: 1.3;
   }
 
   .ann-entry-description {
-    max-width: 31em;
-    font-size: 16px;
-    line-height: 28px;
+    max-width: 28em;
+    font-size: 18px;
+    line-height: 1.85;
   }
 
   .ann-memory-rule {
