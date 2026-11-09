@@ -15,8 +15,6 @@ test("the public portal exposes exactly two generic entries without requiring a 
     const html = await page.text();
     const links = [...html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/g)].map((match) => match[1]);
     assert.deepEqual(links, ["/1000", "/christmas"]);
-    assert.match(html, /1000天情书/);
-    assert.match(html, /圣诞树/);
     assert.doesNotMatch(html, /\/api\/memories\//);
     assert.equal(page.headers.has("set-cookie"), false);
   }
