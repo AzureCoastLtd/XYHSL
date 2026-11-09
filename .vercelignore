@@ -1,0 +1,9 @@
+# Direct authorized deployments include .private server assets; Git still ignores them.
+.git
+.vercel
+.next
+node_modules
+.env.*
+*.tsbuildinfo
+*.log
+.DS_Store
