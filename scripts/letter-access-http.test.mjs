@@ -76,11 +76,11 @@ test("a browser can unlock and stay on its own origin behind a wildcard listener
     assert.match(page.headers.get("cache-control"), /private.*no-store/);
     const gate = await fetch(`${base}/unlock?next=${encodeURIComponent(destination)}`, { headers: { cookie }, redirect: "manual" });
     assert.equal(gate.status, 307);
-    assert.equal(gate.headers.get("location"), `${base}${destination}`);
+    assert.equal(new URL(gate.headers.get("location"), base).href, `${base}${destination}`);
     const defaultGate = await fetch(`${base}/unlock`, { headers: { cookie }, redirect: "manual" });
-    assert.equal(defaultGate.headers.get("location"), `${base}/1000`);
+    assert.equal(new URL(defaultGate.headers.get("location"), base).href, `${base}/1000`);
     const invalidGate = await fetch(`${base}/unlock?next=https%3A%2F%2Funrelated.example`, { headers: { cookie }, redirect: "manual" });
-    assert.equal(invalidGate.headers.get("location"), `${base}/1000`);
+    assert.equal(new URL(invalidGate.headers.get("location"), base).href, `${base}/1000`);
   }
   for (const returnTo of ["/", "/unlock", "//unrelated.example", "https://unrelated.example/"]) {
     const invalidReturn = await submit(password, base, returnTo);
