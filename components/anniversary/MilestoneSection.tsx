@@ -72,8 +72,9 @@ export default function MilestoneSection({ reducedMotion, content }: { reducedMo
 
           <div className="ann-milestone-intro">
             <span className="ann-milestone-label">{milestone?.label}</span>
-            <h2 id="ann-milestone-title">每一天，<br />都算数。</h2>
+            <h2 id="ann-milestone-title">{milestone?.title}</h2>
             <p>从 {dates.startLabel}的第一天，<br />到 {dates.milestoneLabel}，是我们的第 1000 天。</p>
+            <p>{milestone?.description}</p>
           </div>
         </div>
 

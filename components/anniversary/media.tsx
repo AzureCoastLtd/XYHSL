@@ -12,7 +12,7 @@ const CircularGallery = dynamic(() => import("../reactbits/CircularGallery"), {
   loading: () => null,
 });
 
-export function PhotoDeck({ photos }: { photos: PhotoEntry[] }) {
+export function PhotoDeck({ photos, gallery = false, title, note }: { photos: PhotoEntry[]; gallery?: boolean; title?: string; note?: string }) {
   const frameRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLOListElement>(null);
   const trackId = useId();
@@ -20,7 +20,7 @@ export function PhotoDeck({ photos }: { photos: PhotoEntry[] }) {
   const [active, setActive] = useState(0);
   const [galleryReady, setGalleryReady] = useState(false);
   const [galleryFailed, setGalleryFailed] = useState(false);
-  const renderGallery = enhanced && !galleryFailed;
+  const renderGallery = gallery && enhanced && !galleryFailed;
   const usingGallery = renderGallery && galleryReady;
 
   useEffect(() => {
@@ -39,6 +39,14 @@ export function PhotoDeck({ photos }: { photos: PhotoEntry[] }) {
   const updateActive = useCallback(() => {
     const track = trackRef.current;
     if (!track || usingGallery) return;
+    if (track.scrollLeft <= 1) {
+      setActive(0);
+      return;
+    }
+    if (track.scrollLeft >= track.scrollWidth - track.clientWidth - 1) {
+      setActive(Math.max(0, track.children.length - 1));
+      return;
+    }
     const center = track.scrollLeft + track.clientWidth / 2;
     let closest = 0;
     let distance = Infinity;
@@ -68,11 +76,12 @@ export function PhotoDeck({ photos }: { photos: PhotoEntry[] }) {
   if (!photos.length) return null;
 
   return (
-    <div className="ann-photo-album">
+    <div className="ann-photo-album" data-gallery={gallery || undefined}>
       <div className="ann-album-heading">
-        <span>我们的照片</span>
+        <span>{title ?? "我们的照片"}</span>
         <span>{String(photos.length).padStart(2, "0")} 张珍藏</span>
       </div>
+      {note ? <p className="ann-album-note">{note}</p> : null}
       <div ref={frameRef} className="ann-photo-stage">
         <ol
           id={trackId}
@@ -232,38 +241,19 @@ export function TeaSticker({ label, caption, memory }: { label: string; caption:
   );
 }
 
-type AudioMedia = Extract<TimelineMedia, { type: "audio" }>;
-type VideoMedia = Extract<TimelineMedia, { type: "video" }>;
-
-function MediaNote({ title, note, kind }: { title: string; note: string; kind: "audio" | "video" }) {
-  return (
-    <article className={`ann-keepsake-note ann-keepsake-note-${kind}`}>
-      <span className="ann-keepsake-note-mark" aria-hidden="true">{kind === "audio" ? "寄语" : "留影"}</span>
-      <div><h3>{title}</h3><p>{note}</p></div>
-    </article>
+function MemoryPrint({ photo, title, note, expandable }: Extract<TimelineMedia, { type: "print" }>) {
+  const image = (
+    <a href={photo.src} target="_blank" rel="noreferrer" aria-label={`查看完整照片：${photo.alt}（新窗口）`}>
+      <Image src={photo.previewSrc ?? photo.src} alt={photo.alt} width={photo.width ?? 640} height={photo.height ?? 880} sizes="(max-width: 760px) 88vw, 520px" unoptimized />
+      <span className="ann-print-enlarge" aria-hidden="true">↗</span>
+    </a>
   );
-}
-
-export function AudioCard({ title, note, src }: Omit<AudioMedia, "type">) {
-  if (!src) return <MediaNote title={title} note={note} kind="audio" />;
   return (
-    <figure className="ann-recording-card">
-      <figcaption><span>想放给你听</span><h3>{title}</h3><p>{note}</p></figcaption>
-      <audio controls preload="metadata" src={src} aria-label={title}>
-        你的浏览器无法播放这段音频。<a href={src}>打开音频文件</a>
-      </audio>
-    </figure>
-  );
-}
-
-export function VideoCard({ title, note, src, poster }: Omit<VideoMedia, "type">) {
-  if (!src) return <MediaNote title={title} note={note} kind="video" />;
-  return (
-    <figure className="ann-recording-card ann-recording-video">
-      <video controls playsInline preload="metadata" src={src} poster={poster} aria-label={title}>
-        你的浏览器无法播放这段视频。<a href={src}>打开视频文件</a>
-      </video>
-      <figcaption><span>和你一起留下的画面</span><h3>{title}</h3><p>{note}</p></figcaption>
+    <figure className="ann-memory-print" data-landscape={Boolean(photo.width && photo.height && photo.width > photo.height) || undefined}>
+      {title ? <div className="ann-print-title">{title}</div> : null}
+      {expandable ? <details className="ann-print-fold"><summary>展开这页珍藏<span aria-hidden="true">＋</span></summary>{image}</details> : image}
+      <figcaption>{photo.caption}</figcaption>
+      {note ? <p className="ann-print-note">{note}</p> : null}
     </figure>
   );
 }
@@ -285,10 +275,9 @@ export function renderMedia(media: TimelineMedia, index: number, content: Pick<A
   const key = `${media.id ?? media.type}-${index}`;
   switch (media.type) {
     case "date": return <DateCard key={key} date={media.date} caption={media.caption} />;
-    case "photos": return <PhotoDeck key={key} photos={media.items ?? content.photoEntries} />;
+    case "photos": return <PhotoDeck key={key} photos={media.items ?? content.photoEntries} gallery={media.gallery} title={media.title} note={media.note} />;
     case "sticker": return <TeaSticker key={key} label={media.label} caption={media.caption} memory={media.memory} />;
-    case "audio": return <AudioCard key={key} {...media} />;
-    case "video": return <VideoCard key={key} {...media} />;
+    case "print": return <MemoryPrint key={key} {...media} />;
     case "letter": return <LetterCard key={key} letterContent={content.letterContent} />;
     default: return null;
   }

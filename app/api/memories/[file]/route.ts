@@ -1,0 +1,27 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+import { cookies } from "next/headers";
+import { ACCESS_COOKIE, isSessionValid } from "../../../../lib/letter-access";
+
+export const runtime = "nodejs";
+
+const privateHeaders = { "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff" };
+
+export async function GET(_request: Request, { params }: { params: Promise<{ file: string }> }) {
+  if (!isSessionValid((await cookies()).get(ACCESS_COOKIE)?.value)) {
+    return new Response(null, { status: 401, headers: privateHeaders });
+  }
+  const { file } = await params;
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*\.webp$/.test(file)) {
+    return new Response(null, { status: 404, headers: privateHeaders });
+  }
+  try {
+    const bytes = await readFile(join(process.cwd(), ".private", "media", file));
+    return new Response(new Uint8Array(bytes), { headers: { ...privateHeaders, "Content-Type": "image/webp" } });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return new Response(null, { status: 404, headers: privateHeaders });
+    }
+    throw error;
+  }
+}

@@ -157,6 +157,96 @@
   max-width: 640px;
 }
 
+.ann-moments {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 40px clamp(32px, 5vw, 72px);
+  min-width: 0;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ann-moment {
+  min-width: 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--ann-line);
+}
+
+.ann-moment-date {
+  color: var(--ann-rose);
+  font-family: var(--ann-sans);
+  font-size: 12px;
+  line-height: 24px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ann-moment h3 {
+  margin: 10px 0 12px;
+  color: var(--ann-ink);
+  font-family: var(--ann-serif);
+  font-size: clamp(21px, 2.2vw, 27px);
+  font-weight: 400;
+  line-height: 1.6;
+  text-wrap: balance;
+}
+
+.ann-moment-description {
+  margin: 0;
+  color: var(--ann-muted);
+  font-family: var(--ann-serif);
+  font-size: 16px;
+  line-height: 29px;
+  text-wrap: pretty;
+}
+
+.ann-moment-artifacts {
+  display: grid;
+  justify-items: stretch;
+  gap: 24px;
+  min-width: 0;
+  margin-top: 24px;
+}
+
+.ann-moment-artifacts .ann-memory-print {
+  max-width: 360px;
+}
+
+.ann-moment-artifacts .ann-memory-print[data-landscape] {
+  max-width: 100%;
+}
+
+.ann-moment-artifacts .ann-memory-print img {
+  max-height: 380px;
+}
+
+.ann-moment-artifacts .ann-photo-stage {
+  height: 362px;
+}
+
+.ann-moment-artifacts .ann-photo-page {
+  flex-basis: 174px;
+}
+
+.ann-moment-artifacts .ann-photo-index {
+  display: none;
+}
+
+.ann-moment-artifacts .ann-album-footer {
+  flex-wrap: wrap;
+}
+
+@media (min-width: 761px) {
+  .ann-moments > :only-child {
+    grid-column: 1 / -1;
+    max-width: 780px;
+    width: 100%;
+    justify-self: center;
+  }
+}
+
 @media (max-width: 960px) and (min-width: 761px) {
   .ann-entry {
     gap: 40px;
@@ -189,6 +279,20 @@
 
   .ann-timeline-heading > :last-child {
     display: none;
+  }
+
+  .ann-moments {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 36px;
+    margin-top: 0;
+  }
+
+  .ann-moment-artifacts .ann-photo-page {
+    flex-basis: min(220px, 90%);
+  }
+
+  .ann-moment-artifacts .ann-photo-stage {
+    height: auto;
   }
 
   .ann-entry,

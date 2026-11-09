@@ -7,7 +7,6 @@ import type { TimelineEntry } from "./data";
 
 export default function ProgressRail({ activeId, entries }: { activeId: string; entries: TimelineEntry[] }) {
   const progressEntries = useMemo(() => [
-    { id: "opening", label: "启封" },
     ...entries.map((entry) => ({ id: entry.id, label: entry.navLabel || entry.date })),
     { id: "future", label: "未完待续" },
   ], [entries]);
@@ -23,10 +22,10 @@ export default function ProgressRail({ activeId, entries }: { activeId: string; 
         {progressEntries.map((entry, index) => (
           <a
             key={entry.id}
-            className={`ann-progress-item ${activeId === entry.id ? "is-active" : ""} ${index < activeIndex ? "is-past" : ""}`}
+            className={`ann-progress-item ${index === activeIndex ? "is-active" : ""} ${index < activeIndex ? "is-past" : ""}`}
             href={`#${entry.id}`}
             aria-label={`跳转至${entry.label}`}
-            aria-current={activeId === entry.id ? "step" : undefined}
+            aria-current={index === activeIndex ? "step" : undefined}
           >
             <span className="ann-progress-label">{entry.label}</span>
           </a>

@@ -39,17 +39,18 @@ pnpm dev
 
 ## 内容维护
 
-日期、时间线、未来愿望、照片列表和信件正文集中在 `components/anniversary/data.ts`，该模块标记为 `server-only`。仅由通过会话校验的页面传入交互组件；客户端只能 `import type`，不可直接值导入正文，避免内容进入公开 JavaScript 包。
-普通时间节点使用 `tone: "memory"`；`tone: "milestone"` 的节点由第 1000 天专属章节呈现。节点的 `navLabel` 用于进度导航，`titleLines` 可控制中文标题断行，`media` 可配置日期卡、照片、贴纸、音频或视频。
+完整内容保存在未跟踪的 `.private/content.json`，类型和服务端读取入口位于 `components/anniversary/data.ts`。该模块保持 `server-only`；首页先验证会话，再读取 JSON 并传入交互组件。客户端只能 `import type`，不可值导入正文或把私有 JSON 导入构建，避免内容进入公开 JavaScript 或 Git 历史。
+
+`timelineEntries` 的顶层节点代表章节，`moments` 代表章节内的短日期回忆；进度导航只生成顶层章节和未来愿望入口。`tone: "milestone"` 的节点由第 1000 天专属章节呈现；`navLabel` 控制导航文字，`titleLines` 控制标题断行。照片日期与事件日期分开处理，没有明确拍摄日的日常相册不补写年月。
 
 以 `2024-02-23` 为第 1 天，第 1000 天是 `2026-11-18`。
 
 ## 媒体替换
 
-- 照片：把原图放进 `public/images/`，在 `photoEntries` 登记 `src`、真实 `alt` 和图注。可另填 `previewSrc` 指向保持比例的轻量预览；当前 9 张使用 `public/images/previews/` 下的 640px 宽 WebP（质量 82）。相册与缩略图使用预览，放大链接仍指向原图；列表和计数共用同份数据。私密图片设为 `unoptimized`，避免不带会话 Cookie 的 Next.js 优化器取源图失败，也避免公开优化缓存。
-- 音频和视频：在 `timelineEntries` 的对应 `media` 项中填写 `src`，例如 `src: "/media/recording.mp3"`；视频还可设置 `poster`。文件放在 `public/` 后，页面会显示原生播放控件；未配置时只显示文字，不显示播放按钮。
-- 《青花瓷》：仅在拥有合适的音频文件及使用权限时，将其路径填入独立的音频项；仓库不包含该歌曲。
-- 背景轻音乐：页头控制的是浏览器现场合成的旋律，不是《青花瓷》；点击后才播放，与音视频播放互斥。
+- 精选处理后的照片放在未跟踪的 `.private/media/`，不放入 `public/` 或公开仓库。`.private` 使用工作区内的真实目录，避免 Turbopack 拒绝指向构建根目录之外的符号链接；原始素材另行保留，不由站点直接提供。部署前必须单独提供私有 JSON 和媒体目录，仅拉取源码不能恢复私人内容。
+- 照片的 `src` 与 `previewSrc` 使用 `/api/memories/<名称>.webp`。该路由再次验证会话，只接受小写字母、数字和连字符构成的 WebP 文件名，响应为 `private, no-store`。预览与完整文件都必须是真正裁切/脱敏后的副本，并去掉 EXIF/GPS；不能只用 CSS 遮挡。
+- `photos` 使用原生横滑相册；仅显式设置 `gallery: true` 的一处精选相册启用弧形 WebGL 增强。`print` 保留原图比例，可通过 `expandable: true` 使用原生纸页展开。所有私有图片使用 `unoptimized`，避免无会话的优化器取图失败或公开优化缓存。
+- 本次记忆使用真实图片和信纸，不包含没有素材的音视频播放模块。背景轻音乐仍由页头控制，是点击后现场合成的旋律，不是《青花瓷》；仓库不包含该歌曲。
 
 ## 字体与动效
 

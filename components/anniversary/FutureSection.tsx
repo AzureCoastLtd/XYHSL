@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, Gem, Heart, House, Plane, RotateCcw } from "lucide-react";
+import { ArrowUpRight, Gem, GraduationCap, Heart, House, Plane, RotateCcw } from "lucide-react";
 import type { FutureEntry } from "./data";
 import "./future.css";
 
@@ -9,7 +9,7 @@ const wishIcons = {
   "next-trip": Plane,
   "our-place": House,
   proposal: Gem,
-  someday: Heart,
+  "study-together": GraduationCap,
 };
 
 export default function FutureSection({ reducedMotion, entries }: { reducedMotion: boolean; entries: FutureEntry[] }) {
@@ -78,7 +78,7 @@ export default function FutureSection({ reducedMotion, entries }: { reducedMotio
               <ArrowUpRight size={16} strokeWidth={1.5} aria-hidden="true" />
             </Link>
           </div>
-          <span className="ann-ending-colophon">未完待续。</span>
+          <span className="ann-ending-colophon">未完待续，未来更精彩。</span>
         </footer>
       </div>
     </section>

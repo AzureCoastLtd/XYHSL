@@ -42,3 +42,28 @@ test("a browser can unlock and stay on its own origin behind a wildcard listener
   const nullOrigin = await submit(password, "null");
   assert.equal(nullOrigin.status, 403);
 });
+
+test("memory images require a session and never expose private source files", async () => {
+  const login = await fetch(`${base}/api/unlock`, {
+    method: "POST",
+    headers: { origin: base },
+    body: new URLSearchParams({ password }),
+    redirect: "manual",
+  });
+  const cookie = (login.headers.get("set-cookie") ?? "").split(";")[0];
+  const page = await fetch(`${base}/`, { headers: { cookie } });
+  const imagePath = (await page.text()).match(/\/api\/memories\/[a-z0-9-]+\.webp/)?.[0];
+  assert.ok(imagePath, "The private story must contain a processed memory image");
+  const locked = await fetch(`${base}${imagePath}`, { redirect: "manual" });
+  assert.equal(locked.status, 401);
+  const image = await fetch(`${base}${imagePath}`, { headers: { cookie } });
+  assert.equal(image.status, 200);
+  assert.equal(image.headers.get("content-type"), "image/webp");
+  assert.match(image.headers.get("cache-control"), /private.*no-store/);
+  const bytes = Buffer.from(await image.arrayBuffer());
+  assert.equal(bytes.subarray(0, 4).toString(), "RIFF");
+  assert.equal(bytes.subarray(8, 12).toString(), "WEBP");
+  for (const path of ["/api/memories/content.json", "/api/memories/not-a-real-image.webp", "/.private/content.json"]) {
+    assert.equal((await fetch(`${base}${path}`, { headers: { cookie }, redirect: "manual" })).status, 404, path);
+  }
+});

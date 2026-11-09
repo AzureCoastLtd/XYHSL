@@ -1,9 +1,23 @@
 "use client";
 
-import type { AnniversaryContent, TimelineEntry } from "./data";
+import type { AnniversaryContent, TimelineEntry, TimelineMoment } from "./data";
 import { Reveal } from "./effects";
 import { renderMedia } from "./media";
 import "./timeline.css";
+
+function MemoryMoment({ moment, content }: { moment: TimelineMoment; content: AnniversaryContent }) {
+  const isDate = /^\d{4}\.\d{2}(?:\.\d{2})?$/.test(moment.date);
+  return (
+    <li className={`ann-moment${moment.media?.length ? " ann-moment-with-media" : ""}`}>
+      <Reveal>
+        {isDate ? <time className="ann-moment-date" dateTime={moment.date.replaceAll(".", "-")}>{moment.date}</time> : <span className="ann-moment-date">{moment.date}</span>}
+        <h3>{moment.title}</h3>
+        <p className="ann-moment-description">{moment.description}</p>
+      </Reveal>
+      {moment.media?.length ? <div className="ann-moment-artifacts">{moment.media.map((media, index) => renderMedia(media, index, content))}</div> : null}
+    </li>
+  );
+}
 
 function TimelineEntryCard({ entry, index, content }: { entry: TimelineEntry; index: number; content: AnniversaryContent }) {
   const hasMedia = Boolean(entry.media?.length);
@@ -31,6 +45,7 @@ function TimelineEntryCard({ entry, index, content }: { entry: TimelineEntry; in
         <span className="ann-memory-rule" aria-hidden="true" />
       </Reveal>
       {hasMedia ? <div className="ann-entry-artifacts">{entry.media?.map((media, mediaIndex) => renderMedia(media, mediaIndex, content))}</div> : null}
+      {entry.moments?.length ? <ol className="ann-moments" aria-label={`${entry.label}的回忆`}>{entry.moments.map((moment) => <MemoryMoment key={moment.id} moment={moment} content={content} />)}</ol> : null}
     </article>
   );
 }
