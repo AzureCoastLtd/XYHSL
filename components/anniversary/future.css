@@ -149,6 +149,7 @@
   line-height: 1.5;
   letter-spacing: 0;
   text-wrap: balance;
+  white-space: pre-line;
 }
 
 .ann-wish-letter p {

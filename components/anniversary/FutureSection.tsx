@@ -41,7 +41,7 @@ export default function FutureSection({ reducedMotion, entries }: { reducedMotio
                         <WishIcon size={42} strokeWidth={1.1} />
                       </span>
                     </div>
-                    <h3 id={`wish-${entry.id}`}>{entry.title}</h3>
+                    <h3 id={`wish-${entry.id}`}>{entry.title.replace(/([，、])/g, "$1\n")}</h3>
                     <p>{entry.description}</p>
                   </div>
                   <div className="ann-wish-pocket" aria-hidden="true" />
