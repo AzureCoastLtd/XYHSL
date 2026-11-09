@@ -70,6 +70,13 @@ button:disabled { cursor: default; }
 }
 .anniversary-page ::selection { color: var(--ann-night); background: var(--ann-rose); }
 
+.anniversary-page :is(img, a:has(img)) {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+}
+
 .ann-starfield { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
 .ann-starfield i { position: absolute; border-radius: 50%; background: #e7c39b; }
 .ann-kicker { display: block; color: var(--ann-soft); font: 500 11px/1.6 var(--ann-sans); letter-spacing: .18em; }

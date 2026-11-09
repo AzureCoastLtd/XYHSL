@@ -64,7 +64,10 @@ export default function AnniversaryExperience({ content }: { content: Anniversar
   }, [reducedMotion]);
 
   return (
-    <main className="anniversary-page">
+    <main className="anniversary-page" onDragStartCapture={(event) => {
+      const target = event.target;
+      if (target instanceof Element && target.closest("img, a:has(img)")) event.preventDefault();
+    }}>
       <Starfield />
       <ProgressRail activeId={activeId} entries={content.timelineEntries} />
       <SiteHeader />
